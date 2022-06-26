@@ -20,7 +20,7 @@ inline void ffte_bluestein(float x_real[], float x_imag[], size_t N, unsigned ch
 	double wq_r[M], wq_i[M];
 
 	uint64_t j=0;
-	for (uint64_t i = 0; i < N; ++i)
+	for (uint64_t i = 0; i < N; ++i) // Symmetric from N-1, only calculate half of the sequence
 	{
 		trig_param = PI_N * n * n;
 		j=M-i-1;
@@ -52,26 +52,26 @@ inline void ffte_bluestein(float x_real[], float x_imag[], size_t N, unsigned ch
 
     double X_r_tmp, X_i_tmp, r_tmp, i_tmp;
 		
-	uint64_t jj;
-	for (uint64_t j = N; j <= M; ++j)
+	uint64_t k;
+	for (uint64_t j = N-1; j < M; ++j)
 	{
-		jj = j - N;
-
         X_r_tmp=0;
         X_i_tmp=0;
 
 		for (uint64_t i = 0; i < N; ++i)
 		{
-			cmplx_mul(&r_tmp, &i_tmp, xq_r[i], xq_i[i],wq_r[j-i-1],wq_i[j-i-1]);
+			cmplx_mul(&r_tmp, &i_tmp, xq_r[i], xq_i[i],wq_r[j-i],wq_i[j-i]);
 			X_r_tmp+=r_tmp;
 			X_i_tmp+=i_tmp;
 		}
 
-		cmplx_div(&X_r_tmp, &X_i_tmp, X_r_tmp, X_i_tmp, wq_r[j-1], wq_i[j-1]);
 		if (inverse != 0)
-			cmplx_div(&X_r_tmp, &X_i_tmp, X_r_tmp, X_i_tmp, N, 0);
+			cmplx_div(&X_r_tmp, &X_i_tmp, X_r_tmp/N, X_i_tmp/N, wq_r[j], wq_i[j]);
+		else
+			cmplx_div(&X_r_tmp, &X_i_tmp, X_r_tmp, X_i_tmp, wq_r[j], wq_i[j]);
 
-        X_r[jj]=X_r_tmp;
-        X_i[jj]=X_i_tmp;
+		k= j - N + 1;
+        X_r[k]=X_r_tmp;
+        X_i[k]=X_i_tmp;
 	}
 }

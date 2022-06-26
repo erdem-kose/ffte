@@ -27,7 +27,7 @@ int main()
     printf("\n");
 
     // Take FFT
-    ffte(x_r,x_i,N,1,0);
+    ffte(x_r,x_i,N,1);
     
     // Print output
     printf("FFT:\n");
@@ -37,7 +37,7 @@ int main()
     }
 
     // Take IFFT
-    ffte(x_r,x_i,N,0,1);
+    iffte(x_r,x_i,N,0);
     
     // Print output
     printf("Output Signal:\n");
