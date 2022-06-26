@@ -19,7 +19,7 @@ static void ffte_ct_recurse(float x_real[], float x_imag[], size_t N, unsigned c
 	float odd_r[N_div_2];
 	float odd_i[N_div_2];
 
-	double PI=(inverse!=0)?(-M_PI):(M_PI);
+	double PI2_N = (inverse!=0)? (-2.0 * M_PI / (double)N):(2.0 * M_PI / (double)N);
 
 	if(only_real_input==0)
 	{
@@ -52,8 +52,8 @@ static void ffte_ct_recurse(float x_real[], float x_imag[], size_t N, unsigned c
 	// Calculate DFT
 	for (int64_t k = 0; k < N_div_2; k++)
 	{
-		double t_r=cos(2.0 * PI * k / (double)N);
-		double t_i=-sin(2.0 * PI * k / (double)N);
+		double t_r=cos(PI2_N * k);
+		double t_i=-sin(PI2_N * k);
 		cmplx_mul(&t_r, &t_i, t_r, t_i, odd_r[k], odd_i[k]);
 
 		x_real[k] = even_r[k] + t_r;

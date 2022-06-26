@@ -2,14 +2,15 @@
 #include <stdio.h>
 #include "src/ffte.h"
 
+
 int main()
 {
     // Create data
-    unsigned int N = 128;
+    unsigned int N = 100;
     float x_r[N];
     float x_i[N];
 
-    double f=9.375;//10 for N=100 , 9.375 for N=128
+    double f=10;//10 for N=100 , 9.375 for N=128
     double fs=200;
 
     for(int i=0; i< N; ++i)

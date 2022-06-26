@@ -8,31 +8,31 @@
 
 inline void ffte_bluestein(float x_real[], float x_imag[], size_t N, unsigned char only_real_input, unsigned char inverse)
 {
-	// n axis creation
 	uint64_t M = (2 * N) - 1;
-	int64_t n[M];
-
-	n[0] = -(int64_t)(N - 1);
-	for (uint64_t i = 1; i < M; ++i)
-		n[i] = n[i - 1] + 1;
 
 	// wq calculation
-	double trig_param;
-	double wq_r[M];
-	double wq_i[M];
+	double PI_N = (inverse!=0)? (-M_PI  / (double)N):(M_PI  / (double)N);
 
-	for (uint64_t i = 0; i < M; ++i)
+	int64_t n=-(int64_t)(N - 1);
+
+	double trig_param;
+
+	double wq_r[M], wq_i[M];
+
+	uint64_t j=0;
+	for (uint64_t i = 0; i < N; ++i)
 	{
-		trig_param = M_PI * n[i] * n[i] / N;
-		if (inverse != 0)
-			trig_param = -trig_param;
+		trig_param = PI_N * n * n;
+		j=M-i-1;
 		wq_r[i] = cos(trig_param);
+		wq_r[j] = wq_r[i];
 		wq_i[i] = sin(trig_param);
+		wq_i[j] = wq_i[i];
+		++n;
 	}
 
 	// xq calculation
-	double xq_r[N];
-	double xq_i[N];
+	double xq_r[N], xq_i[N];
 
 	if(only_real_input==0)
 	{
@@ -50,16 +50,16 @@ inline void ffte_bluestein(float x_real[], float x_imag[], size_t N, unsigned ch
 	float* X_r=x_real;
 	float* X_i=x_imag;
 
+    double X_r_tmp, X_i_tmp, r_tmp, i_tmp;
+		
 	uint64_t jj;
 	for (uint64_t j = N; j <= M; ++j)
 	{
-		// To be threaded loop
 		jj = j - N;
 
-        double X_r_tmp=0;
-        double X_i_tmp=0;
-        double r_tmp;
-        double i_tmp;
+        X_r_tmp=0;
+        X_i_tmp=0;
+
 		for (uint64_t i = 0; i < N; ++i)
 		{
 			cmplx_mul(&r_tmp, &i_tmp, xq_r[i], xq_i[i],wq_r[j-i-1],wq_i[j-i-1]);
