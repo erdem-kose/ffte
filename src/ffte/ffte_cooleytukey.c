@@ -6,12 +6,12 @@
 #include "subfuncs.h"
 #include "../ffte.h"
 
-void swap(float* X, uint64_t i, uint64_t j);
+void swap(float *X, uint64_t i, uint64_t j);
 
 void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char only_real_input, unsigned char inverse)
 {
 	// Parameter calculation
-	double PI_N = (inverse!=0)? (-M_PI):(M_PI);
+	double PI_N = (inverse != 0) ? (-M_PI) : (M_PI);
 	int64_t M = log((double)N) / log(2.0);
 
 	// If only real input enabled, fill x_imag with zeros
@@ -23,9 +23,8 @@ void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char on
 		}
 	}
 
-	// Input reordering with bit reversal 
+	// Input reordering with bit reversal
 	int64_t i_new;
-	double arg;
 
 	if (only_real_input == 0)
 	{
@@ -62,7 +61,7 @@ void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char on
 			}
 		}
 	}
-	
+
 	// log(N) stages
 	int64_t n1 = 1;
 	int64_t n2 = n1 << 1;
@@ -70,7 +69,9 @@ void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char on
 	int64_t k, j1, j2;
 
 	double w, s, c;
- 	double r_tmp, i_tmp;
+	double r_tmp, i_tmp;
+
+	double trig_param;
 
 	for (int64_t i = 0; i < M; i++)
 	{
@@ -84,15 +85,15 @@ void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char on
 			// Sections
 			for (int64_t j = 0; j < n1; j++)
 			{
-				arg = -j * w;
+				trig_param = -j * w;
 
-				c = cos(arg);
-				s = sin(arg);
+				c = cos(trig_param);
+				s = sin(trig_param);
 
 				j1 = k + j;
 				j2 = j1 + n1;
 
-				cmplx_mul(&r_tmp, &i_tmp, x_real[j2], x_imag[j2], c , s);
+				cmplx_mul(&r_tmp, &i_tmp, x_real[j2], x_imag[j2], c, s);
 
 				x_real[j2] = x_real[j1] - r_tmp;
 				x_imag[j2] = x_imag[j1] - i_tmp;
@@ -116,9 +117,9 @@ void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char on
 	}
 }
 
-inline void swap(float* X, uint64_t i, uint64_t j)
+inline void swap(float *X, uint64_t i, uint64_t j)
 {
 	float temp = X[i];
-	X[i]=X[j];
-	X[j]= temp;
+	X[i] = X[j];
+	X[j] = temp;
 }

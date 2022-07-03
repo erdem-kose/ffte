@@ -11,19 +11,19 @@ inline void ffte_bluestein(float x_real[], float x_imag[], size_t N, unsigned ch
 	uint64_t M = (2 * N) - 1;
 
 	// wq calculation
-	double PI_N = (inverse!=0)? (-M_PI  / (double)N):(M_PI  / (double)N);
+	double PI_N = (inverse != 0) ? (-M_PI / (double)N) : (M_PI / (double)N);
 
-	int64_t n=-(int64_t)(N - 1);
+	int64_t n = -(int64_t)(N - 1);
 
 	double trig_param;
 
 	double wq_r[M], wq_i[M];
 
-	uint64_t j=0;
+	uint64_t j = 0;
 	for (uint64_t i = 0; i < N; ++i) // Symmetric from N-1, only calculate half of the sequence
 	{
 		trig_param = PI_N * n * n;
-		j=M-i-1;
+		j = M - i - 1;
 		wq_r[i] = cos(trig_param);
 		wq_r[j] = wq_r[i];
 		wq_i[i] = sin(trig_param);
@@ -34,44 +34,43 @@ inline void ffte_bluestein(float x_real[], float x_imag[], size_t N, unsigned ch
 	// xq calculation
 	double xq_r[N], xq_i[N];
 
-	if(only_real_input==0)
+	if (only_real_input == 0)
 	{
 		for (uint64_t i = 0; i < N; ++i)
-			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], x_imag[i], wq_r[i+N-1], wq_i[i+N-1]);
+			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], x_imag[i], wq_r[i + N - 1], wq_i[i + N - 1]);
 	}
 	else
 	{
 		for (uint64_t i = 0; i < N; ++i)
-			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], 0, wq_r[i+N-1], wq_i[i+N-1]);
+			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], 0, wq_r[i + N - 1], wq_i[i + N - 1]);
 	}
 
-
 	// X calculation
-	float* X_r=x_real;
-	float* X_i=x_imag;
+	float *X_r = x_real;
+	float *X_i = x_imag;
 
-    double X_r_tmp, X_i_tmp, r_tmp, i_tmp;
-		
+	double X_r_tmp, X_i_tmp, r_tmp, i_tmp;
+
 	uint64_t k;
-	for (uint64_t j = N-1; j < M; ++j)
+	for (uint64_t j = N - 1; j < M; ++j)
 	{
-        X_r_tmp=0;
-        X_i_tmp=0;
+		X_r_tmp = 0;
+		X_i_tmp = 0;
 
 		for (uint64_t i = 0; i < N; ++i)
 		{
-			cmplx_mul(&r_tmp, &i_tmp, xq_r[i], xq_i[i],wq_r[j-i],wq_i[j-i]);
-			X_r_tmp+=r_tmp;
-			X_i_tmp+=i_tmp;
+			cmplx_mul(&r_tmp, &i_tmp, xq_r[i], xq_i[i], wq_r[j - i], wq_i[j - i]);
+			X_r_tmp += r_tmp;
+			X_i_tmp += i_tmp;
 		}
 
 		if (inverse != 0)
-			cmplx_div(&X_r_tmp, &X_i_tmp, X_r_tmp/N, X_i_tmp/N, wq_r[j], wq_i[j]);
+			cmplx_div(&X_r_tmp, &X_i_tmp, X_r_tmp / N, X_i_tmp / N, wq_r[j], wq_i[j]);
 		else
 			cmplx_div(&X_r_tmp, &X_i_tmp, X_r_tmp, X_i_tmp, wq_r[j], wq_i[j]);
 
-		k= j - N + 1;
-        X_r[k]=X_r_tmp;
-        X_i[k]=X_i_tmp;
+		k = j - N + 1;
+		X_r[k] = X_r_tmp;
+		X_i[k] = X_i_tmp;
 	}
 }
