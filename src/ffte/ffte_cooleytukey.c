@@ -6,13 +6,25 @@
 #include "subfuncs.h"
 #include "../ffte.h"
 
-void swap(float* X, uint64_t i, uint64_t j);
+void swap(float *X, uint64_t i, uint64_t j);
 
 void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char only_real_input, unsigned char inverse)
 {
-	// Parameter calculation
-	double PI_N = (inverse!=0)? (-M_PI):(M_PI);
 	int64_t M = log((double)N) / log(2.0);
+
+	// wq calculation
+	double PI_N = (inverse != 0) ? (-M_PI / (double)N) : (M_PI / (double)N);
+
+	double trig_param;
+
+	double wq_r[N], wq_i[N];
+
+	for (uint64_t i = 0; i < N; ++i)
+	{
+		trig_param = i * PI_N;
+		wq_r[i] = cos(trig_param);
+		wq_i[i] = sin(trig_param);
+	}
 
 	// If only real input enabled, fill x_imag with zeros
 	if (only_real_input != 0)
@@ -23,9 +35,8 @@ void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char on
 		}
 	}
 
-	// Input reordering with bit reversal 
+	// Input reordering with bit reversal
 	int64_t i_new;
-	double arg;
 
 	if (only_real_input == 0)
 	{
@@ -62,21 +73,19 @@ void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char on
 			}
 		}
 	}
-	
+
 	// log(N) stages
+	int64_t k, j1, j2, j3, j3_fact;
+
+	double r_tmp, i_tmp;
+	
 	int64_t n1 = 1;
 	int64_t n2 = n1 << 1;
 
-	int64_t k, j1, j2;
-
-	double w, s, c;
- 	double r_tmp, i_tmp;
-
 	for (int64_t i = 0; i < M; i++)
 	{
-		w = PI_N / n1;
-
 		k = 0;
+		j3_fact=N/n1;
 
 		// N stages
 		while (k < N - 1)
@@ -84,15 +93,11 @@ void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char on
 			// Sections
 			for (int64_t j = 0; j < n1; j++)
 			{
-				arg = -j * w;
-
-				c = cos(arg);
-				s = sin(arg);
-
 				j1 = k + j;
 				j2 = j1 + n1;
+				j3 = j*j3_fact;
 
-				cmplx_mul(&r_tmp, &i_tmp, x_real[j2], x_imag[j2], c , s);
+				cmplx_mul(&r_tmp, &i_tmp, x_real[j2], x_imag[j2], wq_r[j3], wq_i[j3]);
 
 				x_real[j2] = x_real[j1] - r_tmp;
 				x_imag[j2] = x_imag[j1] - i_tmp;
@@ -116,9 +121,9 @@ void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char on
 	}
 }
 
-inline void swap(float* X, uint64_t i, uint64_t j)
+inline void swap(float *X, uint64_t i, uint64_t j)
 {
 	float temp = X[i];
-	X[i]=X[j];
-	X[j]= temp;
+	X[i] = X[j];
+	X[j] = temp;
 }
