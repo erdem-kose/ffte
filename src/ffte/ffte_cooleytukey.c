@@ -6,93 +6,94 @@
 #include "subfuncs.h"
 #include "../ffte.h"
 
-static void ffte_ct_recurse(float x_real[], float x_imag[], double W_real[], double W_imag[], size_t N, unsigned char only_real_input, unsigned char inverse)
+static void swap(float* a, float* b)
 {
-	//https://gist.github.com/lukicdarkoo/3f0d056e9244784f8b4a
-	
-	if (N < 2) return;
-	int64_t N_div_2=(N >> 1);
-
-	// Split even and odd
-	float even_r[N_div_2];
-	float even_i[N_div_2];
-	float odd_r[N_div_2];
-	float odd_i[N_div_2];
-	double W_r[N_div_2];
-	double W_i[N_div_2];
-
-	if(only_real_input==0)
-	{
-		for (int64_t i = 0; i < N_div_2; i++) 
-		{
-			int64_t ii = i<<1;
-			even_r[i] = x_real[ii];
-			even_i[i] = x_imag[ii];
-
-			odd_r[i] = x_real[ii|1];
-			odd_i[i] = x_imag[ii|1];
-
-			W_r[i]=W_real[ii];
-			W_i[i]=W_imag[ii];
-		}
-	}
-	else
-	{
-		for (int64_t i = 0; i < N_div_2; i++) {
-			int64_t ii = i<<1;
-			even_r[i] = x_real[ii];
-			even_i[i] = 0;
-
-			odd_r[i] = x_real[ii|1];
-			odd_i[i] = 0;
-
-			W_r[i]=W_real[ii];
-			W_i[i]=W_imag[ii];
-		}
-	}
-
-	// Split on tasks
-	ffte_ct_recurse(even_r, even_i, W_r, W_i, N_div_2, 0, inverse);
-	ffte_ct_recurse(odd_r, odd_i, W_r, W_i, N_div_2, 0, inverse);
-
-	// Calculate DFT
-	for (int64_t k = 0; k < N_div_2; k++)
-	{
-		double t_r=W_real[k];
-		double t_i=W_imag[k];
-		cmplx_mul(&t_r, &t_i, t_r, t_i, odd_r[k], odd_i[k]);
-
-		x_real[k] = even_r[k] + t_r;
-		x_imag[k] = even_i[k] + t_i;
-		x_real[N_div_2 + k] = even_r[k] - t_r;
-		x_imag[N_div_2 + k] = even_i[k] - t_i;
-	}
-
-
+	float temp = *a;
+	*a=*b;
+	*b= temp;
 }
 
-inline void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char only_real_input, unsigned char inverse)
+void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char only_real, unsigned char inverse)
 {
-	// Twiddle factor
-	double PI2_N = (inverse!=0)? (-2.0 * M_PI / (double)N):(2.0 * M_PI / (double)N);
-	double W_r[N], W_i[N];
+	// Parameter calculation
+	double PI_N = (inverse!=0)? (-M_PI):(M_PI);
+	int64_t M = log((double)N) / log(2.0);
 
-	for (int64_t k = 0; k < N; k++)
+	// If only real input enabled, fill x_imag with zeros
+	if (only_real != 0)
 	{
-		W_r[k]=cos(PI2_N * k);
-		W_i[k]=-sin(PI2_N * k);
+		for (int64_t i = 0; i < N; ++i)
+		{
+			x_imag[i] = 0;
+		}
 	}
 
-	// Calculate
-	ffte_ct_recurse(x_real, x_imag, W_r, W_i, N, only_real_input, inverse);
+	// Perform bit reversal.
+	int64_t j, k;
+	double arg;
 
-	// Inverse check
-	if(inverse!=0)
+	for (int64_t i = 0; i < N; ++i)
 	{
-		for (int64_t k = 0; k < N; k++)
+		j = 0;
+
+		for (k = 0; k < M; ++k)
 		{
-			x_real[k]=x_real[k]/N;
-			x_imag[k]=x_imag[k]/N;
+			j = (j << 1) | (1 & (i >> k));
+		}
+
+		if (j < i)
+		{
+			swap(&x_real[i], &x_real[j]);
+			swap(&x_imag[i], &x_imag[j]);
+		}
+	}
+
+	// For log N stages.
+	int64_t n1 = 1;
+	int64_t n2 = n1 << 1;
+
+	int64_t j1, j2;
+
+	double w, s, c;
+ 	double r_tmp, i_tmp;
+
+	for (int64_t i = 0; i < M; i++)
+	{
+		w = PI_N / n1;
+
+		k = 0;
+
+		// For N components.
+		while (k < N - 1)
+		{
+			// For each section.
+			for (j = 0; j < n1; j++)
+			{
+				arg = -j * w;
+				c = cos(arg);
+				s = sin(arg);
+				j1 = k + j;
+				j2 = j1 + n1;
+				r_tmp = x_real[j2] * c - x_imag[j1 + n1] * s;
+				i_tmp = x_imag[j2] * c + x_real[j2] * s;
+				x_real[j2] = x_real[j1] - r_tmp;
+				x_imag[j2] = x_imag[j1] - i_tmp;
+				x_real[j1] = x_real[j1] + r_tmp;
+				x_imag[j1] = x_imag[j1] + i_tmp;
+			}
+			k += n2;
+		}
+
+		n1 = n2;
+		n2 = n2 << 1;
+	}
+
+	if (inverse)
+	{
+		for (int64_t i = 0; i < N; i++)
+		{
+			x_real[i] /= N;
+			x_imag[i] /= N;
 		}
 	}
 }
