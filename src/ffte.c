@@ -6,7 +6,7 @@
 #include "ffte/subfuncs.h"
 
 // FFT
-void ffte(float x_real[], float x_imag[], size_t N, unsigned char only_real_input)
+void ffte(double x_real[], double x_imag[], size_t N, unsigned char only_real_input)
 {
 	if(N<2)
 		return;
@@ -17,7 +17,7 @@ void ffte(float x_real[], float x_imag[], size_t N, unsigned char only_real_inpu
 }
 
 // IFFT
-void iffte(float x_real[], float x_imag[], size_t N, unsigned char only_real_input)
+void iffte(double x_real[], double x_imag[], size_t N, unsigned char only_real_input)
 {
 	if(N<2)
 		return;
@@ -28,7 +28,7 @@ void iffte(float x_real[], float x_imag[], size_t N, unsigned char only_real_inp
 }
 
 // FFTSHIFT (Use before ffte)
-void ffteshift(float x_real[], float x_imag[], size_t N, unsigned char only_real_input)
+void ffteshift(double x_real[], double x_imag[], size_t N, unsigned char only_real_input)
 {
 	if(N<2)
 		return;
@@ -38,7 +38,7 @@ void ffteshift(float x_real[], float x_imag[], size_t N, unsigned char only_real
 }
 
 // IFFTSHIFT (Use after iffte)
-void iffteshift(float x_real[], float x_imag[], size_t N, unsigned char only_real_input)
+void iffteshift(double x_real[], double x_imag[], size_t N, unsigned char only_real_input)
 {
 	if(N<2)
 		return;
