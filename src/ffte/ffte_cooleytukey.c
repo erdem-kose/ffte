@@ -6,9 +6,9 @@
 #include "subfuncs.h"
 #include "../ffte.h"
 
-void swap(float *X, uint64_t i, uint64_t j);
+void swap(double *X, uint64_t i, uint64_t j);
 
-void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char only_real_input, unsigned char inverse)
+void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char only_real_input, unsigned char inverse)
 {
 	int64_t M = log((double)N) / log(2.0);
 
@@ -121,9 +121,9 @@ void ffte_cooleytukey(float x_real[], float x_imag[], size_t N, unsigned char on
 	}
 }
 
-inline void swap(float *X, uint64_t i, uint64_t j)
+inline void swap(double *X, uint64_t i, uint64_t j)
 {
-	float temp = X[i];
+	double temp = X[i];
 	X[i] = X[j];
 	X[j] = temp;
 }
