@@ -19,7 +19,8 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 
 	double wq_r[N], wq_i[N];
 
-	for (uint64_t i = 0; i < N; ++i)
+	int64_t i;
+	for (i = 0; i < N; ++i)
 	{
 		trig_param = i * PI_N;
 		wq_r[i] = cos(trig_param);
@@ -29,7 +30,7 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 	// If only real input enabled, fill x_imag with zeros
 	if (only_real_input != 0)
 	{
-		for (int64_t i = 0; i < N; ++i)
+		for (i = 0; i < N; ++i)
 		{
 			x_imag[i] = 0;
 		}
@@ -40,7 +41,7 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 
 	if (only_real_input == 0)
 	{
-		for (int64_t i = 0; i < N; ++i)
+		for (i = 0; i < N; ++i)
 		{
 			i_new = 0;
 
@@ -58,7 +59,7 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 	}
 	else
 	{
-		for (int64_t i = 0; i < N; ++i)
+		for (i = 0; i < N; ++i)
 		{
 			i_new = 0;
 
@@ -82,7 +83,7 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 	int64_t n1 = 1;
 	int64_t n2 = n1 << 1;
 
-	for (int64_t i = 0; i < M; i++)
+	for (i = 0; i < M; i++)
 	{
 		k = 0;
 		j3_fact=N/n1;
@@ -113,7 +114,7 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 
 	if (inverse)
 	{
-		for (int64_t i = 0; i < N; i++)
+		for (i = 0; i < N; i++)
 		{
 			x_real[i] /= N;
 			x_imag[i] /= N;

@@ -13,5 +13,5 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 
-target_link_libraries(${PROJECT_NAME} m)
+target_link_libraries(${PROJECT_NAME} m plplot)
 include(CPack)
