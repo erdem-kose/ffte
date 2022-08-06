@@ -6,7 +6,7 @@
 #include "ffte/subfuncs.h"
 
 // FFT
-void ffte(double x_real[], double x_imag[], size_t N, unsigned char only_real_input)
+void ffte(double* x_real, double* x_imag, size_t N, unsigned char only_real_input)
 {
 	if(N<2)
 		return;
@@ -17,7 +17,7 @@ void ffte(double x_real[], double x_imag[], size_t N, unsigned char only_real_in
 }
 
 // IFFT
-void iffte(double x_real[], double x_imag[], size_t N, unsigned char only_real_input)
+void iffte(double* x_real, double* x_imag, size_t N, unsigned char only_real_input)
 {
 	if(N<2)
 		return;
@@ -25,25 +25,4 @@ void iffte(double x_real[], double x_imag[], size_t N, unsigned char only_real_i
 		ffte_cooleytukey(x_real, x_imag, N, only_real_input, 1);
 	else
 		ffte_bluestein(x_real, x_imag, N, only_real_input, 1);
-}
-
-// FFTSHIFT (Use before ffte)
-void ffteshift(double x_real[], double x_imag[], size_t N, unsigned char only_real_input)
-{
-	if(N<2)
-		return;
-	{
-		
-	}
-}
-
-// IFFTSHIFT (Use after iffte)
-void iffteshift(double x_real[], double x_imag[], size_t N, unsigned char only_real_input)
-{
-	if(N<2)
-		return;
-	else
-	{
-
-	}
 }
