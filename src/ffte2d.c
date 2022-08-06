@@ -34,12 +34,12 @@ void ffte2d(double** x_real, double** x_imag, size_t M, size_t N, unsigned char 
 	{
 		for(i=0; i<N; ++i)
 		{
-			for(j=0; i<M; ++i)
+			for(j=0; j<M; ++j)
 				x_real_tmp[j]=x_real[i][j];
 
 			ffte_cooleytukey(x_real_tmp, x_imag_tmp, M, 0, 0);
 
-			for(j=0; i<M; ++i)
+			for(j=0; j<M; ++j)
 				x_real[i][j]=x_real_tmp[j];
 		}
 	}
@@ -47,12 +47,12 @@ void ffte2d(double** x_real, double** x_imag, size_t M, size_t N, unsigned char 
 	{
 		for(i=0; i<N; ++i)
 		{
-			for(j=0; i<M; ++i)
+			for(j=0; j<M; ++j)
 				x_real_tmp[j]=x_real[i][j];
 
 			ffte_bluestein(x_real_tmp, x_imag_tmp, M, 0, 0);
 
-			for(j=0; i<M; ++i)
+			for(j=0; j<M; ++j)
 				x_real[i][j]=x_real_tmp[j];
 		}
 	}
