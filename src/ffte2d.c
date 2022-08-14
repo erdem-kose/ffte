@@ -8,7 +8,7 @@
 // FFT
 void ffte2d(double** x_real, double** x_imag, size_t M, size_t N, unsigned char only_real_input)
 {
-	uint64_t i, j;
+	unsigned int i, j;
 
 	//Process first index
 	if(N<2)
@@ -25,35 +25,47 @@ void ffte2d(double** x_real, double** x_imag, size_t M, size_t N, unsigned char 
 	}
 
 	//Process second index
-	float x_real_tmp[M];
-	float x_imag_tmp[M];
+	double x_real_tmp[M];
+	double x_imag_tmp[M];
 
 	if(M<2)
 	{}
 	else if((M & (M - 1)) == 0)
 	{
-		for(i=0; i<N; ++i)
+		for(j=0; j<N; ++j)
 		{
-			for(j=0; j<M; ++j)
-				x_real_tmp[j]=x_real[i][j];
+			for(i=0; i<M; ++i)
+			{
+				x_real_tmp[i]=x_real[i][j];
+				x_imag_tmp[i]=x_imag[i][j];
+			}
 
 			ffte_cooleytukey(x_real_tmp, x_imag_tmp, M, 0, 0);
 
-			for(j=0; j<M; ++j)
-				x_real[i][j]=x_real_tmp[j];
+			for(i=0; i<M; ++i)
+			{
+				x_real[i][j]=x_real_tmp[i];
+				x_imag[i][j]=x_imag_tmp[i];
+			}
 		}
 	}
 	else
 	{
-		for(i=0; i<N; ++i)
+		for(j=0; j<N; ++j)
 		{
-			for(j=0; j<M; ++j)
-				x_real_tmp[j]=x_real[i][j];
+			for(i=0; i<M; ++i)
+			{
+				x_real_tmp[i]=x_real[i][j];
+				x_imag_tmp[i]=x_imag[i][j];
+			}
 
 			ffte_bluestein(x_real_tmp, x_imag_tmp, M, 0, 0);
 
-			for(j=0; j<M; ++j)
-				x_real[i][j]=x_real_tmp[j];
+			for(i=0; i<M; ++i)
+			{
+				x_real[i][j]=x_real_tmp[i];
+				x_imag[i][j]=x_imag_tmp[i];
+			}
 		}
 	}
 }
@@ -61,7 +73,7 @@ void ffte2d(double** x_real, double** x_imag, size_t M, size_t N, unsigned char 
 // IFFT
 void iffte2d(double** x_real, double** x_imag, size_t M, size_t N, unsigned char only_real_input)
 {
-	uint64_t i, j;
+	unsigned int i, j;
 
 	//Process first index
 	if(N<2)
@@ -78,47 +90,46 @@ void iffte2d(double** x_real, double** x_imag, size_t M, size_t N, unsigned char
 	}
 
 	//Process second index
-	float x_real_tmp[M];
-	float x_imag_tmp[M];
+	double x_real_tmp[N];
+	double x_imag_tmp[N];
 	
 	if(M<2)
 	{}
 	else if((M & (M - 1)) == 0)
 	{
-		for(i=0; i<N; ++i)
+		for(j=0; j<N; ++j)
 		{
-			for(j=0; j<M; ++j)
+			for(i=0; i<M; ++i)
 			{
-				memcpy()
-				x_real_tmp[j]=x_real[i][j];
-				x_imag_tmp[j]=x_imag[i][j];
+				x_real_tmp[i]=x_real[i][j];
+				x_imag_tmp[i]=x_imag[i][j];
 			}
 
 			ffte_cooleytukey(x_real_tmp, x_imag_tmp, M, 0, 1);
 
-			for(j=0; j<M; ++j)
+			for(i=0; i<M; ++i)
 			{
-				x_real[i][j]=x_real_tmp[j];
-				x_imag[i][j]=x_imag_tmp[j];
+				x_real[i][j]=x_real_tmp[i];
+				x_imag[i][j]=x_imag_tmp[i];
 			}
 		}
 	}
 	else
 	{
-		for(i=0; i<N; ++i)
+		for(j=0; j<N; ++j)
 		{
-			for(j=0; j<M; ++j)
+			for(i=0; i<M; ++i)
 			{
-				x_real_tmp[j]=x_real[i][j];
-				x_imag_tmp[j]=x_imag[i][j];
+				x_real_tmp[i]=x_real[i][j];
+				x_imag_tmp[i]=x_imag[i][j];
 			}
 
 			ffte_bluestein(x_real_tmp, x_imag_tmp, M, 0, 1);
 
-			for(j=0; j<M; ++j)
+			for(i=0; i<M; ++i)
 			{
-				x_real[i][j]=x_real_tmp[j];
-				x_imag[i][j]=x_imag_tmp[j];
+				x_real[i][j]=x_real_tmp[i];
+				x_imag[i][j]=x_imag_tmp[i];
 			}
 		}
 	}

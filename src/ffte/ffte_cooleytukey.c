@@ -37,7 +37,7 @@ void ffte_cooleytukey(double* x_real, double* x_imag, size_t N, unsigned char on
 	}
 
 	// Input reordering with bit reversal
-	int64_t i_new;
+	int64_t i_new, i_shift;
 
 	if (only_real_input == 0)
 	{
@@ -45,7 +45,7 @@ void ffte_cooleytukey(double* x_real, double* x_imag, size_t N, unsigned char on
 		{
 			i_new = 0;
 
-			for (int64_t i_shift = 0; i_shift < M; ++i_shift)
+			for (i_shift = 0; i_shift < M; ++i_shift)
 			{
 				i_new = (i_new << 1) | (1 & (i >> i_shift));
 			}
@@ -76,7 +76,7 @@ void ffte_cooleytukey(double* x_real, double* x_imag, size_t N, unsigned char on
 	}
 
 	// log(N) stages
-	int64_t k, j1, j2, j3, j3_fact;
+	int64_t k, j, j1, j2, j3, j3_fact;
 
 	double r_tmp, i_tmp;
 	
@@ -92,7 +92,7 @@ void ffte_cooleytukey(double* x_real, double* x_imag, size_t N, unsigned char on
 		while (k < N - 1)
 		{
 			// Sections
-			for (int64_t j = 0; j < n1; j++)
+			for (j = 0; j < n1; j++)
 			{
 				j1 = k + j;
 				j2 = j1 + n1;
