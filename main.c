@@ -25,10 +25,14 @@ void plot(const char* filename, double x[], double y[], int N, const char* x_lbl
     plsetopt("o", filename);
     
     plinit();
-
+    
+    plcol0( 1 );
     plenv( xmin, xmax, ymin, ymax, 0, 0 );
+
+    plcol0( 6 );
     pllab( x_lbl, y_lbl, "" );
 
+    plcol0( 4 );
     plline( N, x, y );
 
     plend();
