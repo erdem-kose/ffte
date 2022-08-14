@@ -8,7 +8,7 @@
 
 void swap(double *X, uint64_t i, uint64_t j);
 
-void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char only_real_input, unsigned char inverse)
+void ffte_cooleytukey(double* x_real, double* x_imag, size_t N, unsigned char only_real_input, unsigned char inverse)
 {
 	int64_t M = log((double)N) / log(2.0);
 
@@ -19,7 +19,8 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 
 	double wq_r[N], wq_i[N];
 
-	for (uint64_t i = 0; i < N; ++i)
+	int64_t i;
+	for (i = 0; i < N; ++i)
 	{
 		trig_param = i * PI_N;
 		wq_r[i] = cos(trig_param);
@@ -29,22 +30,22 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 	// If only real input enabled, fill x_imag with zeros
 	if (only_real_input != 0)
 	{
-		for (int64_t i = 0; i < N; ++i)
+		for (i = 0; i < N; ++i)
 		{
 			x_imag[i] = 0;
 		}
 	}
 
 	// Input reordering with bit reversal
-	int64_t i_new;
+	int64_t i_new, i_shift;
 
 	if (only_real_input == 0)
 	{
-		for (int64_t i = 0; i < N; ++i)
+		for (i = 0; i < N; ++i)
 		{
 			i_new = 0;
 
-			for (int64_t i_shift = 0; i_shift < M; ++i_shift)
+			for (i_shift = 0; i_shift < M; ++i_shift)
 			{
 				i_new = (i_new << 1) | (1 & (i >> i_shift));
 			}
@@ -58,7 +59,7 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 	}
 	else
 	{
-		for (int64_t i = 0; i < N; ++i)
+		for (i = 0; i < N; ++i)
 		{
 			i_new = 0;
 
@@ -75,14 +76,14 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 	}
 
 	// log(N) stages
-	int64_t k, j1, j2, j3, j3_fact;
+	int64_t k, j, j1, j2, j3, j3_fact;
 
 	double r_tmp, i_tmp;
 	
 	int64_t n1 = 1;
 	int64_t n2 = n1 << 1;
 
-	for (int64_t i = 0; i < M; i++)
+	for (i = 0; i < M; i++)
 	{
 		k = 0;
 		j3_fact=N/n1;
@@ -91,7 +92,7 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 		while (k < N - 1)
 		{
 			// Sections
-			for (int64_t j = 0; j < n1; j++)
+			for (j = 0; j < n1; j++)
 			{
 				j1 = k + j;
 				j2 = j1 + n1;
@@ -113,7 +114,7 @@ void ffte_cooleytukey(double x_real[], double x_imag[], size_t N, unsigned char 
 
 	if (inverse)
 	{
-		for (int64_t i = 0; i < N; i++)
+		for (i = 0; i < N; i++)
 		{
 			x_real[i] /= N;
 			x_imag[i] /= N;

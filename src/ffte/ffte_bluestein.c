@@ -8,7 +8,7 @@
 
 static uint64_t nextpow2(uint64_t v);
 
-void ffte_bluestein(double x_real[], double x_imag[], size_t N, unsigned char only_real_input, unsigned char inverse)
+void ffte_bluestein(double* x_real, double* x_imag, size_t N, unsigned char only_real_input, unsigned char inverse)
 {
 	uint64_t M = (2 * N) - 1;
 	uint64_t M_pow2 = nextpow2(M);
@@ -24,8 +24,9 @@ void ffte_bluestein(double x_real[], double x_imag[], size_t N, unsigned char on
 	double wq_r_half[N];
 	double wq_i_half[N];
 
+	uint64_t i;
 	uint64_t j = N-1;
-	for (uint64_t i = M_pow2-N+1; i < M_pow2; ++i)
+	for (i = M_pow2-N+1; i < M_pow2; ++i)
 	{
 		trig_param = PI_N * n * n;
 
@@ -44,7 +45,7 @@ void ffte_bluestein(double x_real[], double x_imag[], size_t N, unsigned char on
 	wq_i[0] = 0;
 	wq_i_half[0] = 0;
 
-	for (uint64_t i = N; i < M_pow2-N+1; ++i)
+	for (i = N; i < M_pow2-N+1; ++i)
 	{
 		wq_r[i]=0;
 		wq_i[i]=0;
@@ -56,16 +57,16 @@ void ffte_bluestein(double x_real[], double x_imag[], size_t N, unsigned char on
 
 	if (only_real_input == 0)
 	{
-		for (uint64_t i = 0; i < N; ++i)
+		for (i = 0; i < N; ++i)
 			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], x_imag[i], wq_r_half[i], wq_i_half[i]);
 	}
 	else
 	{
-		for (uint64_t i = 0; i < N; ++i)
+		for (i = 0; i < N; ++i)
 			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], 0, wq_r_half[i], wq_i_half[i]);
 	}
 
-	for (uint64_t i = N; i < M_pow2; ++i)
+	for (i = N; i < M_pow2; ++i)
 	{
 		xq_r[i]=0;
 		xq_i[i]=0;
@@ -75,7 +76,7 @@ void ffte_bluestein(double x_real[], double x_imag[], size_t N, unsigned char on
 	ffte_cooleytukey(xq_r, xq_i, M_pow2, 0, 0);
 	ffte_cooleytukey(wq_r, wq_i, M_pow2, 0, 0);
 
-	for (uint64_t i = 0; i < M_pow2; ++i)
+	for (i = 0; i < M_pow2; ++i)
 	{
 		cmplx_mul(&xq_r[i], &xq_i[i], xq_r[i], xq_i[i], wq_r[i], wq_i[i]);
 	}
@@ -85,21 +86,21 @@ void ffte_bluestein(double x_real[], double x_imag[], size_t N, unsigned char on
 	// X calculation
 	if(inverse!=0)
 	{
-		for (uint64_t i = 0; i < N; ++i)
+		for (i = 0; i < N; ++i)
 		{
 			cmplx_div(&x_real[i], &x_imag[i], xq_r[i]/N, xq_i[i]/N, wq_r_half[i], wq_i_half[i]);
 		}
 	}
 	else
 	{
-		for (uint64_t i = 0; i < N; ++i)
+		for (i = 0; i < N; ++i)
 		{
 			cmplx_div(&x_real[i], &x_imag[i], xq_r[i], xq_i[i], wq_r_half[i], wq_i_half[i]);
 		}
 	}
 }
 
-static uint64_t nextpow2(uint64_t v)
+inline uint64_t nextpow2(uint64_t v)
 {
 	v--;
 	v |= v >> 1;
