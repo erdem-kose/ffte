@@ -8,7 +8,7 @@
 
 static uint64_t nextpow2(uint64_t v);
 
-void ffte_bluestein(double* x_real, double* x_imag, size_t N, unsigned char only_real_input, unsigned char inverse)
+void ffte_bluestein(double* x_real, double* x_imag, unsigned int N, unsigned char only_real_input, unsigned char inverse)
 {
 	uint64_t M = (2 * N) - 1;
 	uint64_t M_pow2 = nextpow2(M);
