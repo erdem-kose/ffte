@@ -9,4 +9,4 @@ Fast Fourier Transform for Embedded Systems in C.
     sudo apt install libplplot-dev
     sudo apt install printer-driver-cups-pdf
     ``` 
- * For AVX2 support, add compiler options `-DFFTE_AVX_ENABLE -mavx512f`, or CMake option `-DFFTE_AVX_ENABLE=ON`
+ * For AVX2 support, add compiler options `-DFFTE_AVX_ENABLE -mavx2`, or CMake option `-DFFTE_AVX_ENABLE=ON`

@@ -48,7 +48,7 @@ void test_ffte1d(unsigned int N)
 int main(int argc, char **argv )
 {
     printf("\n\rNon-Power of 2 FFT test\r\n");
-    test_ffte1d(1023*16); // TODO: 1024*63 gives segfault, look at that
+    test_ffte1d(1024*15); // TODO: 1024*63 gives segfault, look at that
     printf("Power of 2 FFT test\r\n");
     test_ffte1d(1024*16);
 

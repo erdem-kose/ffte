@@ -23,36 +23,17 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 	double wq_r[N], wq_i[N];
 
 	int64_t i;
-	#ifdef FFTE_AVX_ENABLE
-		int64_t incr = 4;	
-
-		__m256d vec_i=_mm256_set_pd(0, 1, 2, 3);
-		__m256d vec_incr=_mm256_set1_pd(incr);				
-		__m256d vec_PI_N=_mm256_set1_pd(PI_N);
-		__m256d vec_trig_param;
-
-		//__m256i _mm256_load_epi32 (void const* mem_addr)
-
-		for (i = 0; i < N; i += incr)
-		{
-			vec_trig_param = _mm256_mul_pd(vec_i, vec_PI_N);
-			_mm256_store_pd(&wq_r[i], ffte_mm256_cos_pd(vec_trig_param));
-			_mm256_store_pd(&wq_i[i], ffte_mm256_sin_pd(vec_trig_param));
-			
-			vec_i = _mm256_add_pd (vec_i, vec_incr);
-		}
-	#else
-		for (i = 0; i < N_2; ++i)
-		{
-			wq_r[i] = cos(i * PI_N);
-			wq_i[i+N_2] = wq_r[i];
-		}
-		for (; i < N; ++i)
-		{
-			wq_r[i] = cos(i * PI_N);
-			wq_i[i-N_2] = -wq_r[i];
-		}
-	#endif
+	for (i = 0; i < N_2; ++i)
+	{
+		wq_r[i] = cos(i * PI_N);
+		wq_i[i+N_2] = wq_r[i];
+	}
+	for (; i < N; ++i)
+	{
+		wq_r[i] = cos(i * PI_N);
+		wq_i[i-N_2] = -wq_r[i];
+	}
+	
 	// If only real input enabled, fill x_imag with zeros
 	if (only_real_input != 0)
 	{
