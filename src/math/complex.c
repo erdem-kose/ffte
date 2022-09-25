@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "math_funcs.h"
+#include "funcs.h"
 
 inline void cmplx_mul(double *z_r, double *z_i, double x_r, double x_i, double y_r, double y_i)
 {

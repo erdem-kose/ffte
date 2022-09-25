@@ -2,12 +2,7 @@
 
 //https://en.wikipedia.org/wiki/Pad%C3%A9_approximant
 
-#include <math.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-
-#include "math_funcs.h"
+#include "funcs.h"
 
 __m512 ffte_mm512_cos_ps(__m512 a)
 {

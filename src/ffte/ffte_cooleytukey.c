@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "ffte_funcs.h"
-#include "../math/math_funcs.h"
+#include "funcs.h"
+#include "../math/funcs.h"
 
 #ifdef FFTE_AVX_ENABLE
 	#include <immintrin.h>

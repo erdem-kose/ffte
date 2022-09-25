@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "ffte.h"
-#include "ffte/ffte_funcs.h"
+#include "ffte/funcs.h"
 
 void ffte2d_base(double** x_real, double** x_imag, unsigned int M, unsigned int  N, unsigned char only_real_input, unsigned char isinverse);
 
