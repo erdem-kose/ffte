@@ -6,8 +6,8 @@ void cmplx_div(double *z_r, double *z_i, double x_r, double x_i, double y_r, dou
 
 #ifdef FFTE_AVX_ENABLE
     #include <immintrin.h>
-    __m512 ffte_mm512_cos_ps(__m512 a);
-    __m512 ffte_mm512_sin_ps(__m512 b);
+    __m256d ffte_mm256_cos_pd(__m256d x);
+    __m256d ffte_mm256_sin_pd(__m256d x);
 #endif
 
 #endif
