@@ -3,8 +3,12 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "subfuncs.h"
-#include "../ffte.h"
+#include "ffte_funcs.h"
+#include "../math/math_funcs.h"
+
+#ifdef FFTE_AVX_ENABLE
+	#include <immintrin.h>
+#endif
 
 void swap(double *X, uint64_t i, uint64_t j);
 
@@ -20,13 +24,38 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 	double wq_r[N], wq_i[N];
 
 	int64_t i;
-	for (i = 0; i < N; ++i)
-	{
-		trig_param = i * PI_N;
-		wq_r[i] = cos(trig_param);
-		wq_i[i] = sin(trig_param);
-	}
+	#ifdef FFTE_AVX_ENABLE
+		__m512 vec_i=_mm512_set_ps(	0, 1, 2, 3,
+									4, 5, 6, 7,
+									8, 9, 10, 11,
+									12, 13, 14, 15);
+		__m512 vec_incr=_mm512_set_ps(	0, 1, 2, 3,
+									4, 5, 6, 7,
+									8, 9, 10, 11,
+									12, 13, 14, 15);				
+		__m512 vec_PI_N=_mm512_set_ps(	PI_N, PI_N, PI_N, PI_N,
+									PI_N, PI_N, PI_N, PI_N, 
+									PI_N, PI_N, PI_N, PI_N,
+									PI_N, PI_N, PI_N, PI_N);
+		__m512 vec_trig_param;
 
+		//__m512i _mm512_load_epi32 (void const* mem_addr)
+		for (i = 0; i < N; i+=16)
+		{
+			vec_trig_param = _mm512_mul_ps(vec_i, vec_PI_N);
+			_mm512_store_ps(&wq_r[i],ffte_mm512_cos_ps(vec_trig_param));
+			_mm512_store_ps(&wq_i[i],ffte_mm512_cos_ps(vec_trig_param));
+			
+			vec_i = _mm512_add_ps (vec_i, vec_incr);
+		}
+	#else
+		for (i = 0; i < N; ++i)
+		{
+			trig_param = i * PI_N;
+			wq_r[i] = cos(trig_param);
+			wq_i[i] = sin(trig_param);
+		}
+	#endif
 	// If only real input enabled, fill x_imag with zeros
 	if (only_real_input != 0)
 	{

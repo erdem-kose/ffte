@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "ffte.h"
-#include "ffte/subfuncs.h"
+#include "ffte/ffte_funcs.h"
 
 // FFT
 void ffte(double* x_real, double* x_imag, unsigned int N, unsigned char only_real_input)

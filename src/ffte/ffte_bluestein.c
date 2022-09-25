@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "subfuncs.h"
-#include "../ffte.h"
+#include "ffte_funcs.h"
+#include "../math/math_funcs.h"
 
 static uint64_t nextpow2(uint64_t v);
 

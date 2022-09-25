@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(ffte VERSION 0.1.0)
 
-include(CTest)
-enable_testing()
+#C flags section
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -O2 ")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu99 -Ofast")
+#Options Section
+option(FFTE_AVX_ENABLE "Use AVX512 instructions for FFT calculations" OFF)
 
+#Sources Section
 file(GLOB_RECURSE SRC src/*.c)
 file(GLOB_RECURSE UTILS utils/*.c)
 
@@ -15,8 +17,10 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/ffte ${PROJECT_SOURCE_DIR}/main
 )
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-
 target_link_libraries(${PROJECT_NAME} m plplot)
-include(CPack)
+
+if(FFTE_AVX_ENABLE)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DFFTE_AVX_ENABLE -mavx512f")
+endif()
+
+#Install section
