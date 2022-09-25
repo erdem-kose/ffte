@@ -4,7 +4,7 @@
 
 #ifdef FFTE_AVX_ENABLE
     #include <immintrin.h>
-    inline void cmplx_mul(double *z_r, double *z_i, double x_r, double x_i, double y_r, double y_i)
+    void cmplx_mul(double *z_r, double *z_i, double x_r, double x_i, double y_r, double y_i)
 	{
 		// https://mathworld.wolfram.com/ComplexMultiplication.html
 		__m256d mult;
@@ -28,7 +28,7 @@
 		*z_r=out[1];
 	}
 
-	inline void cmplx_div(double *z_r, double *z_i, double x_r, double x_i, double y_r, double y_i)
+	void cmplx_div(double *z_r, double *z_i, double x_r, double x_i, double y_r, double y_i)
 	{
 		// https://mathworld.wolfram.com/ComplexDivision.html
 		__m256d mult;
@@ -63,14 +63,14 @@
 		*z_i=out[0];
 	}
 #else
-	inline void cmplx_mul(double *z_r, double *z_i, double x_r, double x_i, double y_r, double y_i)
+	void cmplx_mul(double *z_r, double *z_i, double x_r, double x_i, double y_r, double y_i)
 	{
 		// https://mathworld.wolfram.com/ComplexMultiplication.html
 		*z_r = (x_r * y_r) - (x_i * y_i);
 		*z_i = (x_i * y_r) + (x_r * y_i);
 	}
 
-	inline void cmplx_div(double *z_r, double *z_i, double x_r, double x_i, double y_r, double y_i)
+	void cmplx_div(double *z_r, double *z_i, double x_r, double x_i, double y_r, double y_i)
 	{
 		// https://mathworld.wolfram.com/ComplexDivision.html
 		double c = y_r * y_r + y_i * y_i;
