@@ -57,17 +57,18 @@ void ffte_bluestein(double* x_real, double* x_imag, unsigned int N, unsigned cha
 	double xq_r[M_pow2], xq_i[M_pow2];
 	double r_tmp, i_tmp;
 
-	if (only_real_input == 0)
-	{
-		for (i = 0; i < N; ++i)
-			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], x_imag[i], wq_r_half[i], wq_i_half[i]);
-	}
-	else
-	{
-		for (i = 0; i < N; ++i)
-			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], 0, wq_r_half[i], wq_i_half[i]);
-	}
 
+	for (i = 0; i < N; ++i)
+	{
+		if (only_real_input == 0)
+		{
+			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], x_imag[i], wq_r_half[i], wq_i_half[i]);
+		}
+		else
+		{
+			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], 0, wq_r_half[i], wq_i_half[i]);
+		}
+	}
 	for (i = N; i < M_pow2; ++i)
 	{
 		xq_r[i]=0;
@@ -86,18 +87,17 @@ void ffte_bluestein(double* x_real, double* x_imag, unsigned int N, unsigned cha
 	ffte_cooleytukey(xq_r, xq_i, M_pow2, 0, 1);
 
 	// X calculation
-	if(inverse!=0)
+	for (i = 0; i < N; ++i)
 	{
-		for (i = 0; i < N; ++i)
-		{
-			cmplx_div(&x_real[i], &x_imag[i], xq_r[i]/N, xq_i[i]/N, wq_r_half[i], wq_i_half[i]);
-		}
+		cmplx_div(&x_real[i], &x_imag[i], xq_r[i], xq_i[i], wq_r_half[i], wq_i_half[i]);
 	}
-	else
+
+	if (inverse)
 	{
-		for (i = 0; i < N; ++i)
+		for (i = 0; i < N; i++)
 		{
-			cmplx_div(&x_real[i], &x_imag[i], xq_r[i], xq_i[i], wq_r_half[i], wq_i_half[i]);
+			x_real[i] /= N;
+			x_imag[i] /= N;
 		}
 	}
 }

@@ -5,7 +5,7 @@ project(ffte VERSION 0.1.0)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -O2")
 
 #Options Section
-option(FFTE_AVX_ENABLE "Use AVX2 instructions for FFT calculations" OFF)
+option(FFTE_x86PARALLEL_ENABLE "Use AVX2 instructions for FFT calculations" OFF)
 
 #Sources Section
 file(GLOB_RECURSE SRC src/*.c)
@@ -19,8 +19,8 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
 target_link_libraries(${PROJECT_NAME} m plplot)
 
-if(FFTE_AVX_ENABLE)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DFFTE_AVX_ENABLE -mavx2 -pthread")
+if(FFTE_x86PARALLEL_ENABLE)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DFFTE_x86PARALLEL_ENABLE -mavx2 -pthread")
 endif()
 
 #Install section

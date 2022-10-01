@@ -13,14 +13,14 @@ void swap(double *X, uint64_t i, uint64_t j);
 void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned char only_real_input, unsigned char inverse)
 {
 	int64_t M = log((double)N) / log(2.0);
-	int64_t N_2=N/2;
-
+	
 	// wq calculation
 	double PI_N = (inverse != 0) ? (-M_PI / (double)N) : (M_PI / (double)N);
 
 	double wq_r[N], wq_i[N];
 
 	int64_t i;
+	int64_t N_2=N/2;
 	for (i = 0; i < N_2; ++i)
 	{
 		wq_r[i] = cos(i * PI_N);
@@ -44,39 +44,21 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 	// Input reordering with bit reversal
 	int64_t i_new, i_shift;
 
-	if (only_real_input == 0)
+	for (i = 0; i < N; ++i)
 	{
-		for (i = 0; i < N; ++i)
+		i_new = 0;
+
+		for (i_shift = 0; i_shift < M; ++i_shift)
 		{
-			i_new = 0;
-
-			for (i_shift = 0; i_shift < M; ++i_shift)
-			{
-				i_new = (i_new << 1) | (1 & (i >> i_shift));
-			}
-
-			if (i_new < i)
-			{
-				swap(x_real, i, i_new);
-				swap(x_imag, i, i_new);
-			}
+			i_new = (i_new << 1) | (1 & (i >> i_shift));
 		}
-	}
-	else
-	{
-		for (i = 0; i < N; ++i)
+
+		if (i_new < i)
 		{
-			i_new = 0;
+			if (only_real_input != 0)
+				swap(x_imag, i, i_new);
 
-			for (int64_t i_shift = 0; i_shift < M; ++i_shift)
-			{
-				i_new = (i_new << 1) | (1 & (i >> i_shift));
-			}
-
-			if (i_new < i)
-			{
-				swap(x_real, i, i_new);
-			}
+			swap(x_real, i, i_new);
 		}
 	}
 
@@ -129,7 +111,8 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 
 inline void swap(double *X, uint64_t i, uint64_t j)
 {
-	double temp = X[i];
+	static double temp;
+	temp = X[i];
 	X[i] = X[j];
 	X[j] = temp;
 }
