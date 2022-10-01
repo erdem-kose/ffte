@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.0)
 project(ffte VERSION 0.1.0)
 
 #C flags section
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -O2 ")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -O2")
 
 #Options Section
 option(FFTE_AVX_ENABLE "Use AVX2 instructions for FFT calculations" OFF)
@@ -20,7 +20,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 target_link_libraries(${PROJECT_NAME} m plplot)
 
 if(FFTE_AVX_ENABLE)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DFFTE_AVX_ENABLE -mavx -mavx2 -march=native -msse2 -mfpmath=sse")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DFFTE_AVX_ENABLE -mavx2 -pthread")
 endif()
 
 #Install section

@@ -1,10 +1,12 @@
+#ifndef FFTE_AVX_ENABLE
+
 #include <math.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "funcs.h"
-#include "../math/funcs.h"
+#include "../funcs.h"
+#include "../../math/funcs.h"
 
 static uint64_t nextpow2(uint64_t v);
 
@@ -112,3 +114,5 @@ inline uint64_t nextpow2(uint64_t v)
 	v++;
 	return v;
 }
+
+#endif
