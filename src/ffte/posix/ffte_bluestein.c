@@ -1,4 +1,4 @@
-#ifdef FFTE_AVX_ENABLE
+#ifdef FFTE_x86PARALLEL_ENABLE
 
 #include <math.h>
 #include <stdio.h>
