@@ -4,12 +4,6 @@ Fast Fourier Transform for Embedded Systems in C.
  * Non-power of 2 FFT's calculated by Bluestein
  * 2D FFT supported
 
- * Demo script `main.c` requires 
-    ```bash 
-    sudo apt install libplplot-dev
-    sudo apt install printer-driver-cups-pdf
-    ``` 
-
 # Install requirements (Windows)
 To install required software, please follow (you may need to disable antivirus for these, your responsibility!)
 
