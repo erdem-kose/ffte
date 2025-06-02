@@ -1,5 +1,9 @@
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "ffte.h"
-#include "ffte/ffte_blocks.h"
+#include "ffte/subfuncs.h"
 
 void ffte2d_base(double** x_real, double** x_imag, unsigned int M, unsigned int  N, unsigned char only_real_input, unsigned char isinverse);
 

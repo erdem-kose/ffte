@@ -1,30 +1,32 @@
-#include "ffte_blocks.h"
-#include "../math/ffte_math.h"
+#include <math.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+#include "subfuncs.h"
+#include "../ffte.h"
 
 void swap(double *X, uint64_t i, uint64_t j);
 
 void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned char only_real_input, unsigned char inverse)
 {
 	int64_t M = log((double)N) / log(2.0);
-	
+
 	// wq calculation
 	double PI_N = (inverse != 0) ? (-M_PI / (double)N) : (M_PI / (double)N);
+
+	double trig_param;
 
 	double wq_r[N], wq_i[N];
 
 	int64_t i;
-	int64_t N_2=N/2;
-	for (i = 0; i < N_2; ++i)
+	for (i = 0; i < N; ++i)
 	{
-		wq_r[i] = cos(i * PI_N);
-		wq_i[i+N_2] = wq_r[i];
+		trig_param = i * PI_N;
+		wq_r[i] = cos(trig_param);
+		wq_i[i] = sin(trig_param);
 	}
-	for (; i < N; ++i)
-	{
-		wq_r[i] = cos(i * PI_N);
-		wq_i[i-N_2] = -wq_r[i];
-	}
-	
+
 	// If only real input enabled, fill x_imag with zeros
 	if (only_real_input != 0)
 	{
@@ -37,21 +39,39 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 	// Input reordering with bit reversal
 	int64_t i_new, i_shift;
 
-	for (i = 0; i < N; ++i)
+	if (only_real_input == 0)
 	{
-		i_new = 0;
-
-		for (i_shift = 0; i_shift < M; ++i_shift)
+		for (i = 0; i < N; ++i)
 		{
-			i_new = (i_new << 1) | (1 & (i >> i_shift));
-		}
+			i_new = 0;
 
-		if (i_new < i)
-		{
-			if (only_real_input != 0)
+			for (i_shift = 0; i_shift < M; ++i_shift)
+			{
+				i_new = (i_new << 1) | (1 & (i >> i_shift));
+			}
+
+			if (i_new < i)
+			{
+				swap(x_real, i, i_new);
 				swap(x_imag, i, i_new);
+			}
+		}
+	}
+	else
+	{
+		for (i = 0; i < N; ++i)
+		{
+			i_new = 0;
 
-			swap(x_real, i, i_new);
+			for (int64_t i_shift = 0; i_shift < M; ++i_shift)
+			{
+				i_new = (i_new << 1) | (1 & (i >> i_shift));
+			}
+
+			if (i_new < i)
+			{
+				swap(x_real, i, i_new);
+			}
 		}
 	}
 
@@ -104,8 +124,7 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 
 inline void swap(double *X, uint64_t i, uint64_t j)
 {
-	static double temp;
-	temp = X[i];
+	double temp = X[i];
 	X[i] = X[j];
 	X[j] = temp;
 }

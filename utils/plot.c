@@ -22,6 +22,9 @@ void plot(const char* filename, double x[], double y[], int N, const char* x_lbl
     // Plplot
     plsetopt("dev","psc");
     plsetopt("o", filename);
+    plsetopt("portrait", "0");
+    plsetopt("pxwidth", "800");   // width in pixels
+    plsetopt("pxheight", "600"); 
     
     plinit();
     

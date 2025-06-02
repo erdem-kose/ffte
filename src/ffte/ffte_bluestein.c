@@ -1,5 +1,12 @@
-#include "ffte_blocks.h"
-#include "../math/ffte_math.h"
+#include <math.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+#include "subfuncs.h"
+#include "../ffte.h"
+
+static uint64_t nextpow2(uint64_t v);
 
 void ffte_bluestein(double* x_real, double* x_imag, unsigned int N, unsigned char only_real_input, unsigned char inverse)
 {
@@ -48,18 +55,17 @@ void ffte_bluestein(double* x_real, double* x_imag, unsigned int N, unsigned cha
 	double xq_r[M_pow2], xq_i[M_pow2];
 	double r_tmp, i_tmp;
 
-
-	for (i = 0; i < N; ++i)
+	if (only_real_input == 0)
 	{
-		if (only_real_input == 0)
-		{
+		for (i = 0; i < N; ++i)
 			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], x_imag[i], wq_r_half[i], wq_i_half[i]);
-		}
-		else
-		{
-			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], 0, wq_r_half[i], wq_i_half[i]);
-		}
 	}
+	else
+	{
+		for (i = 0; i < N; ++i)
+			cmplx_div(&xq_r[i], &xq_i[i], x_real[i], 0, wq_r_half[i], wq_i_half[i]);
+	}
+
 	for (i = N; i < M_pow2; ++i)
 	{
 		xq_r[i]=0;
@@ -78,18 +84,31 @@ void ffte_bluestein(double* x_real, double* x_imag, unsigned int N, unsigned cha
 	ffte_cooleytukey(xq_r, xq_i, M_pow2, 0, 1);
 
 	// X calculation
-	for (i = 0; i < N; ++i)
+	if(inverse!=0)
 	{
-		cmplx_div(&x_real[i], &x_imag[i], xq_r[i], xq_i[i], wq_r_half[i], wq_i_half[i]);
-	}
-
-	if (inverse)
-	{
-		for (i = 0; i < N; i++)
+		for (i = 0; i < N; ++i)
 		{
-			x_real[i] /= N;
-			x_imag[i] /= N;
+			cmplx_div(&x_real[i], &x_imag[i], xq_r[i]/N, xq_i[i]/N, wq_r_half[i], wq_i_half[i]);
+		}
+	}
+	else
+	{
+		for (i = 0; i < N; ++i)
+		{
+			cmplx_div(&x_real[i], &x_imag[i], xq_r[i], xq_i[i], wq_r_half[i], wq_i_half[i]);
 		}
 	}
 }
 
+inline uint64_t nextpow2(uint64_t v)
+{
+	v--;
+	v |= v >> 1;
+	v |= v >> 2;
+	v |= v >> 4;
+	v |= v >> 8;
+	v |= v >> 16;
+	v |= v >> 32;
+	v++;
+	return v;
+}

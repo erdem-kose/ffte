@@ -14,10 +14,10 @@ file(GLOB_RECURSE UTILS_C_FILES "utils/*.c*")
 file(GLOB_RECURSE UTILS_H_FILES "utils/*.h*")
 file(GLOB_RECURSE TEST_C_FILES "tests/*.c*")
 file(GLOB_RECURSE TEST_H_FILES "tests/*.h*")
-set(ZLIB_PATH "lib/external/zlib/build/")
-set(LIBPNG_PATH "lib/external/libpng/build/")
-set(PLPLOT_PATH "lib/external/plplot/build/")
-set(GOOGLETEST_PATH "lib/external/googletest/install/")
+set(ZLIB_PATH "lib/external/zlib/")
+set(LIBPNG_PATH "lib/external/libpng/")
+set(PLPLOT_PATH "lib/external/plplot/")
+set(GOOGLETEST_PATH "lib/external/googletest/")
 
 # Add the executable
 link_directories("${ZLIB_PATH}/lib/"

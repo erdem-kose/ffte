@@ -21,3 +21,12 @@ make
 make install
 
 Set-Location -Path "$rundir"
+
+$buildPath = Join-Path $Path "install"
+Get-ChildItem -Path $Path -Force | Where-Object {
+    $_.Name -ne "install"
+} | Remove-Item -Recurse -Force
+Get-ChildItem -Path $buildPath -Force | ForEach-Object {
+    Move-Item -Path $_.FullName -Destination $Path -Force
+}
+Remove-Item -Path $buildPath -Recurse -Force

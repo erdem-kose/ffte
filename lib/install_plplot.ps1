@@ -27,6 +27,14 @@ cmake .. -G "MinGW Makefiles" `
 make
 make install
 
+$buildPath = Join-Path $zlibDir "build"
+Get-ChildItem -Path $zlibDir -Force | Where-Object {
+    $_.Name -ne "build"
+} | Remove-Item -Recurse -Force
+Get-ChildItem -Path $buildPath -Force | ForEach-Object {
+    Move-Item -Path $_.FullName -Destination $zlibDir -Force
+}
+
 ### --- 2. Clone and build static libpng ---
 if (Test-Path $pngDir) { Remove-Item $pngDir -Recurse -Force }
 git clone --branch libpng16 --single-branch https://git.code.sf.net/p/libpng/code $pngDir
@@ -39,23 +47,32 @@ cmake .. -G "MinGW Makefiles" `
     -DCMAKE_INSTALL_PREFIX="$pngDir/build/" `
     -DPNG_SHARED=OFF `
     -DPNG_STATIC=ON `
-    -DZLIB_LIBRARY="$zlibDir/build/lib/libz.a" `
-    -DZLIB_INCLUDE_DIR="$zlibDir/build/include" `
+    -DZLIB_LIBRARY="$zlibDir/lib/libz.a" `
+    -DZLIB_INCLUDE_DIR="$zlibDir/include" `
     -DBUILD_SHARED_LIBS=OFF
 
 make
 make install
 
-### --- 3. Clone and build PLplot statically with PNG only ---
-if (Test-Path $plplotPath) { Remove-Item $plplotPath -Recurse -Force }
-git clone --branch plplot-5.15.0 --single-branch https://git.code.sf.net/p/plplot/plplot $plplotPath
+$buildPath = Join-Path $pngDir "build"
+Get-ChildItem -Path $pngDir -Force | Where-Object {
+    $_.Name -ne "build"
+} | Remove-Item -Recurse -Force
+Get-ChildItem -Path $buildPath -Force | ForEach-Object {
+    Move-Item -Path $_.FullName -Destination $pngDir -Force
+}
 
-if (Test-Path "$plplotPath/build") { Remove-Item "$plplotPath/build" -Recurse -Force }
-New-Item -ItemType Directory -Path "$plplotPath/build" | Out-Null
-Set-Location "$plplotPath/build"
+### --- 3. Clone and build PLplot statically with PNG only ---
+if (Test-Path "${plplotPath}_tmp") { Remove-Item "${plplotPath}_tmp" -Recurse -Force }
+git clone --branch plplot-5.15.0 --single-branch https://git.code.sf.net/p/plplot/plplot "${plplotPath}_tmp"
+
+if (Test-Path "$plplotPath") { Remove-Item "$plplotPath" -Recurse -Force }
+New-Item -ItemType Directory -Path "$plplotPath" | Out-Null
+New-Item -ItemType Directory -Path "${plplotPath}_tmp/build" | Out-Null
+Set-Location "${plplotPath}_tmp/build"
 
 cmake .. -G "MinGW Makefiles" `
-    -DCMAKE_INSTALL_PREFIX="$plplotPath/build/" `
+    -DCMAKE_INSTALL_PREFIX="$plplotPath" `
     -DBUILD_SHARED_LIBS=OFF `
     -DPLD_png=ON `
     -DPLD_pdf=OFF `
@@ -76,12 +93,16 @@ cmake .. -G "MinGW Makefiles" `
     -DENABLE_DYNDRIVERS=OFF `
     -DENABLE_STATIC_DRIVERS=ON `
     -DENABLE_qsastime=ON `
-    -DCMAKE_PREFIX_PATH="$pngDir/build/;$zlibDir/build/" `
-    -DCMAKE_C_FLAGS="-I$pngDir/build/include -I$zlibDir/build/include" `
-    -DCMAKE_EXE_LINKER_FLAGS="-L$pngDir/build/lib -L$zlibDir/build/lib -static"
+    -DCMAKE_SKIP_INSTALL_RPATH=ON `
+    -DCMAKE_BUILD_RPATH_USE_ORIGIN=ON `
+    -DCMAKE_PREFIX_PATH="$pngDir/;$zlibDir/" `
+    -DCMAKE_C_FLAGS="-I$pngDir/include -I$zlibDir/include" `
+    -DCMAKE_EXE_LINKER_FLAGS="-L$pngDir/lib -L$zlibDir/lib -static"
 
 make
 make install
 
 ### --- 4. Final cleanup ---
 Set-Location -Path "$rundir"
+
+Remove-Item -Path "${plplotPath}_tmp" -Recurse -Force
