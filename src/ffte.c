@@ -1,9 +1,5 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "ffte.h"
-#include "ffte/funcs.h"
+#include "ffte/ffte_blocks.h"
 
 // FFT
 void ffte(double* x_real, double* x_imag, unsigned int N, unsigned char only_real_input)

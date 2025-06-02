@@ -1,5 +1,2 @@
-main
-build
-.vscode
-
-ffte_*.pdf
+lib/external/
+**/build

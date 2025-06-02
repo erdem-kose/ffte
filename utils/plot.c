@@ -1,5 +1,5 @@
 #include <math.h>
-#include <plplot/plplot.h>
+#include "plplot/plplot.h"
 #include "plot.h"
 
 void plot(const char* filename, double x[], double y[], int N, const char* x_lbl, const char* y_lbl)
@@ -20,7 +20,7 @@ void plot(const char* filename, double x[], double y[], int N, const char* x_lbl
             ymin=y[i];
     }
     // Plplot
-    plsetopt("dev","pdf");
+    plsetopt("dev","psc");
     plsetopt("o", filename);
     
     plinit();

@@ -1,0 +1,13 @@
+[
+    {
+        "name": "w64devkit-x64-2.0.0",
+        "compilers": {
+            "C": "${workspaceFolder}/lib/external/mingw/bin/gcc.exe",
+            "CXX": "${workspaceFolder}/lib/external/mingw/bin/g++.exe"
+        },
+        "environmentVariables": {
+            "PATH": "${workspaceFolder}/lib/external/mingw/bin:${env:PATH}"
+        }
+    }
+]
+

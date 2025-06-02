@@ -1,14 +1,5 @@
-#ifndef FFTE_x86PARALLEL_ENABLE
-
-#include <math.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-
-#include "../funcs.h"
-#include "../../math/funcs.h"
-
-static uint64_t nextpow2(uint64_t v);
+#include "ffte_blocks.h"
+#include "../math/ffte_math.h"
 
 void ffte_bluestein(double* x_real, double* x_imag, unsigned int N, unsigned char only_real_input, unsigned char inverse)
 {
@@ -102,17 +93,3 @@ void ffte_bluestein(double* x_real, double* x_imag, unsigned int N, unsigned cha
 	}
 }
 
-inline uint64_t nextpow2(uint64_t v)
-{
-	v--;
-	v |= v >> 1;
-	v |= v >> 2;
-	v |= v >> 4;
-	v |= v >> 8;
-	v |= v >> 16;
-	v |= v >> 32;
-	v++;
-	return v;
-}
-
-#endif

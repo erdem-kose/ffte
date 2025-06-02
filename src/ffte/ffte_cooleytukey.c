@@ -1,12 +1,5 @@
-#ifndef FFTE_x86PARALLEL_ENABLE
-
-#include <math.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-
-#include "../funcs.h"
-#include "../../math/funcs.h"
+#include "ffte_blocks.h"
+#include "../math/ffte_math.h"
 
 void swap(double *X, uint64_t i, uint64_t j);
 
@@ -116,5 +109,3 @@ inline void swap(double *X, uint64_t i, uint64_t j)
 	X[i] = X[j];
 	X[j] = temp;
 }
-
-#endif
