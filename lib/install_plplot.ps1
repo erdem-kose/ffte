@@ -10,6 +10,7 @@ $env:Path = "$cwd/external/mingw/bin;$cwd/external/cmake/bin;$env:Path"
 $external = "$cwd/external"
 $zlibDir = "$external/zlib"
 $pngDir  = "$external/libpng"
+$gdDir  = "$external/libgd"
 $plplotPath = "$external/plplot"
 
 ### --- 1. Clone and build static zlib ---
@@ -21,19 +22,11 @@ New-Item -ItemType Directory -Path "$zlibDir/build" | Out-Null
 Set-Location "$zlibDir/build"
 
 cmake .. -G "MinGW Makefiles" `
-    -DCMAKE_INSTALL_PREFIX="$zlibDir/build/" `
+    -DCMAKE_INSTALL_PREFIX="$zlibDir/installfolder" `
     -DBUILD_SHARED_LIBS=OFF
 
 make
 make install
-
-$buildPath = Join-Path $zlibDir "build"
-Get-ChildItem -Path $zlibDir -Force | Where-Object {
-    $_.Name -ne "build"
-} | Remove-Item -Recurse -Force
-Get-ChildItem -Path $buildPath -Force | ForEach-Object {
-    Move-Item -Path $_.FullName -Destination $zlibDir -Force
-}
 
 ### --- 2. Clone and build static libpng ---
 if (Test-Path $pngDir) { Remove-Item $pngDir -Recurse -Force }
@@ -44,39 +37,52 @@ New-Item -ItemType Directory -Path "$pngDir/build" | Out-Null
 Set-Location "$pngDir/build"
 
 cmake .. -G "MinGW Makefiles" `
-    -DCMAKE_INSTALL_PREFIX="$pngDir/build/" `
+    -DCMAKE_INSTALL_PREFIX="$pngDir/installfolder" `
     -DPNG_SHARED=OFF `
     -DPNG_STATIC=ON `
-    -DZLIB_LIBRARY="$zlibDir/lib/libz.a" `
-    -DZLIB_INCLUDE_DIR="$zlibDir/include" `
+    -DZLIB_LIBRARY="$zlibDir/installfolder/lib/libzlibstatic.a" `
+    -DZLIB_INCLUDE_DIR="$zlibDir/installfolder/include" `
     -DBUILD_SHARED_LIBS=OFF
 
 make
 make install
 
-$buildPath = Join-Path $pngDir "build"
-Get-ChildItem -Path $pngDir -Force | Where-Object {
-    $_.Name -ne "build"
-} | Remove-Item -Recurse -Force
-Get-ChildItem -Path $buildPath -Force | ForEach-Object {
-    Move-Item -Path $_.FullName -Destination $pngDir -Force
-}
+### --- 3. Clone and build static libgd ---
+if (Test-Path $gdDir) { Remove-Item $gdDir -Recurse -Force }
+git clone --branch gd-2.3.3 --single-branch https://github.com/libgd/libgd.git $gdDir
 
-### --- 3. Clone and build PLplot statically with PNG only ---
-if (Test-Path "${plplotPath}_tmp") { Remove-Item "${plplotPath}_tmp" -Recurse -Force }
-git clone --branch plplot-5.15.0 --single-branch https://git.code.sf.net/p/plplot/plplot "${plplotPath}_tmp"
-
-if (Test-Path "$plplotPath") { Remove-Item "$plplotPath" -Recurse -Force }
-New-Item -ItemType Directory -Path "$plplotPath" | Out-Null
-New-Item -ItemType Directory -Path "${plplotPath}_tmp/build" | Out-Null
-Set-Location "${plplotPath}_tmp/build"
+if (Test-Path "$gdDir/build") { Remove-Item "$gdDir/build" -Recurse -Force }
+New-Item -ItemType Directory -Path "$gdDir/build" | Out-Null
+Set-Location "$gdDir/build"
 
 cmake .. -G "MinGW Makefiles" `
-    -DCMAKE_INSTALL_PREFIX="$plplotPath" `
+    -DCMAKE_INSTALL_PREFIX="$gdDir/installfolder" `
+    -DBUILD_SHARED_LIBS=OFF `
+    -DBUILD_STATIC_LIBS=ON `
+    -DENABLE_PNG=ON `
+    -DZLIB_INCLUDE_DIR="$zlibDir/installfolder/include" `
+    -DZLIB_LIBRARY="$zlibDir/installfolder/lib/libzlibstatic.a" `
+    -DPNG_PNG_INCLUDE_DIR="$pngDir/installfolder/include" `
+    -DPNG_LIBRARY="$pngDir/installfolder/lib/libpng.a" `
+    -DWIN32=ON
+
+make
+make install
+
+### --- 4. Clone and build PLplot statically with only the PNG driver ---
+if (Test-Path "$plplotPath") { Remove-Item "$plplotPath" -Recurse -Force }
+git clone --branch plplot-5.15.0 --single-branch https://git.code.sf.net/p/plplot/plplot "$plplotPath"
+
+if (Test-Path "$plplotPath/build") { Remove-Item "$plplotPath/build" -Recurse -Force }
+New-Item -ItemType Directory -Path "$plplotPath/build" | Out-Null
+Set-Location "$plplotPath/build"
+
+cmake .. -G "MinGW Makefiles" `
+    -DCMAKE_INSTALL_PREFIX="$plplotPath/installfolder/" `
     -DBUILD_SHARED_LIBS=OFF `
     -DPLD_png=ON `
     -DPLD_pdf=OFF `
-    -DPLD_svg=OFF `
+    -DPLD_svg=ON `
     -DPLD_qt=OFF `
     -DPLD_qtwidget=OFF `
     -DPLD_xwin=OFF `
@@ -95,14 +101,11 @@ cmake .. -G "MinGW Makefiles" `
     -DENABLE_qsastime=ON `
     -DCMAKE_SKIP_INSTALL_RPATH=ON `
     -DCMAKE_BUILD_RPATH_USE_ORIGIN=ON `
-    -DCMAKE_PREFIX_PATH="$pngDir/;$zlibDir/" `
-    -DCMAKE_C_FLAGS="-I$pngDir/include -I$zlibDir/include" `
-    -DCMAKE_EXE_LINKER_FLAGS="-L$pngDir/lib -L$zlibDir/lib -static"
+    -DGD_INCLUDE_DIRS="$gdDir/installfolder/include/" `
+    -DGD_LIBRARIES="$gdDir/installfolder/lib/libgd.a" `
+    -DGD_LIBRARY_DIRS="$gdDir/installfolder/lib/"
 
 make
 make install
-
 ### --- 4. Final cleanup ---
 Set-Location -Path "$rundir"
-
-Remove-Item -Path "${plplotPath}_tmp" -Recurse -Force

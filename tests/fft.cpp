@@ -29,7 +29,7 @@ extern "C" {
         double ffte_time, iffte_time;
     
         // Plot data
-        plot("../tests/output/ffte_x.psc", t_axis, x_r , N, "t", "X");
+        plot("../tests/output/ffte_x.svg", t_axis, x_r , N, "t", "X");
     
         // Take FFT
         tic();
@@ -37,8 +37,8 @@ extern "C" {
         ffte_time=toc();
         printf("\tFFTE takes %f secs \r\n", ffte_time);
     
-        plot("../tests/output/ffte_Xr.psc", f_axis, x_r , N, "f", "X");
-        plot("../tests/output/ffte_Xi.psc", f_axis, x_i , N, "f", "X");
+        plot("../tests/output/ffte_Xr.svg", f_axis, x_r , N, "f", "X");
+        plot("../tests/output/ffte_Xi.svg", f_axis, x_i , N, "f", "X");
     
         // Take IFFT
         tic();
@@ -46,7 +46,7 @@ extern "C" {
         iffte_time=toc();
         printf("\tIFFTE takes %f secs \r\n", iffte_time);
     
-        plot("../tests/output/ffte_x_ifft.psc", t_axis, x_r , N, "t", "X");
+        plot("../tests/output/ffte_x_ifft.svg", t_axis, x_r , N, "t", "X");
     }
 }
 
