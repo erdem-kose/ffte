@@ -8,8 +8,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Source directories
-file(GLOB_RECURSE SOURCE_C_FILES "src/*.c*")
-file(GLOB_RECURSE SOURCE_H_FILES "src/*.h*")
+file(GLOB_RECURSE SOURCE_C_FILES "src/**/*.c*")
+file(GLOB_RECURSE SOURCE_H_FILES "src/**/*.h*")
 file(GLOB_RECURSE UTILS_C_FILES "utils/*.c*")
 file(GLOB_RECURSE UTILS_H_FILES "utils/*.h*")
 file(GLOB_RECURSE TEST_C_FILES "tests/*.c*")

@@ -6,7 +6,7 @@ extern "C" {
     #include <math.h>
     #include "../utils/plot.h"
     #include "../utils/exectime.h"
-    #include "../src/ffte.h"
+    #include "../src/c/ffte.h"
 
     void test_ffte1d(unsigned int N)
     {
@@ -50,7 +50,7 @@ extern "C" {
     }
 }
 
-TEST(q1test, test1) {
+TEST(ffte1d_c_test, ffte1d_c_test) {
     printf("Power of 2 FFT test\r\n");
     test_ffte1d(8*16);
     
