@@ -50,7 +50,7 @@ extern "C" {
     }
 }
 
-TEST(ffte1d_c_test, ffte1d_c_test) {
+TEST(ffte_test, 1d_c) {
     printf("Power of 2 FFT test\r\n");
     test_ffte1d(8*16);
     
