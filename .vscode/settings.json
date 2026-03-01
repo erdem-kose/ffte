@@ -104,6 +104,8 @@
         "variant": "cpp",
         "ffte_blocks.h": "c",
         "ffte_math.h": "c",
-        "plot.h": "c"
+        "plot.h": "c",
+        "math.h": "c",
+        "stdint.h": "c"
     }
 }

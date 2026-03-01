@@ -1,3 +1,5 @@
+# Copyright (c) [2022-2026] Erdem Kose
+
 cmake_minimum_required(VERSION 3.31)
 
 # Project name

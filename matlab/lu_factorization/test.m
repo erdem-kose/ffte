@@ -1,3 +1,5 @@
+% Copyright (c) [2022-2026] Erdem Kose
+
 clc; clear; close all;
 % https://www.geeksforgeeks.org/doolittle-algorithm-lu-decomposition/#:~:text=Doolittle's%20method%20provides%20an%20alternative,of%20L%20and%20U%20explicitly.
 % http://home.cc.umanitoba.ca/~farhadi/Math2120/Inverse%20Using%20LU%20decomposition.pdf

@@ -1,3 +1,5 @@
+// Copyright (c) [2022-2026] Erdem Kose
+
 #pragma once
 
 void ffte(double* x_real, double* x_imag, unsigned int N, unsigned char only_real_input);

@@ -1,3 +1,5 @@
+// Copyright (c) [2022-2026] Erdem Kose
+
 #include "ffte_dynfix.hpp"
 #include "ffte/subfuncs.hpp"
 

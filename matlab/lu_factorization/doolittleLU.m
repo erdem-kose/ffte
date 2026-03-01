@@ -1,3 +1,5 @@
+% Copyright (c) [2022-2026] Erdem Kose
+
 function [L,U,P]=doolittleLU(A)
     [N,M]=size(A);
     L=zeros(N,M);

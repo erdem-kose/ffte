@@ -1,3 +1,5 @@
+// Copyright (c) [2022-2026] Erdem Kose
+
 #pragma once
 
 template <typename T> void ffte_pp(T* x_real, T* x_imag, unsigned int N, bool only_real_input);

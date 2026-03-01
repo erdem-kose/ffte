@@ -1,4 +1,7 @@
+# Copyright (c) [2022-2026] Erdem Kose
+
 cls
+
 $ErrorActionPreference = "Stop"
 
 $cwd = Split-Path -Path $PSCommandPath

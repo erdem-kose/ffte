@@ -1,3 +1,5 @@
+# Copyright (c) [2022-2026] Erdem Kose
+
 cls
 
 $cwd=Split-Path -Path $PSCommandPath 

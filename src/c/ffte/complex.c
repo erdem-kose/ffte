@@ -1,3 +1,5 @@
+// Copyright (c) [2022-2026] Erdem Kose
+
 #ifndef FFTE_x86PARALLEL_ENABLE
 	#include <math.h>
 	#include <stdint.h>
