@@ -1,5 +1,6 @@
 {
     "cmake.sourceDirectory": "${workspaceFolder}/",
+    "cmake.ctestArgs": ["--verbose"],
     "cmake.cmakePath": "${workspaceFolder}/lib/external/cmake/bin/cmake",
     "cmake.options.statusBarVisibility": "visible",
     "cmake.generator": "MinGW Makefiles",

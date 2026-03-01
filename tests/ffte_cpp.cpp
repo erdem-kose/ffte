@@ -30,7 +30,7 @@ void test_ffte1d_cpp(unsigned int N)
     double ffte_time, iffte_time;
 
     // Plot data
-    plot("../tests/output/ffte_cpp_x.svg", t_axis, x_r , N, "t", "X");
+    plot("../tests/output/cpp/ffte_cpp_x.svg", t_axis, x_r , N, "t", "X");
 
     // Take FFT
     tic();
@@ -38,8 +38,8 @@ void test_ffte1d_cpp(unsigned int N)
     ffte_time=toc();
     printf("\tFFTE takes %f secs \r\n", ffte_time);
 
-    plot("../tests/output/ffte_cpp_Xr.svg", f_axis, x_r , N, "f", "X");
-    plot("../tests/output/ffte_cpp_Xi.svg", f_axis, x_i , N, "f", "X");
+    plot("../tests/output/cpp/ffte_cpp_Xr.svg", f_axis, x_r , N, "f", "X");
+    plot("../tests/output/cpp/ffte_cpp_Xi.svg", f_axis, x_i , N, "f", "X");
 
     // Take IFFT
     tic();
@@ -47,7 +47,7 @@ void test_ffte1d_cpp(unsigned int N)
     iffte_time=toc();
     printf("\tIFFTE takes %f secs \r\n", iffte_time);
 
-    plot("../tests/output/ffte_cpp_x_ifft.svg", t_axis, x_r , N, "t", "X");
+    plot("../tests/output/cpp/ffte_cpp_x_ifft.svg", t_axis, x_r , N, "t", "X");
 }
 
 TEST(ffte_test, 1d_cpp) {
