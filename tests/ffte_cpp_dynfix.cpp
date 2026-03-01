@@ -59,7 +59,7 @@ static void test_ffte_fix_pow2(unsigned int N)
     tic();
     ffte_pp_fix<double,int32_t>(xr_fix, xi_fix, N, true);
     ffte_fix_time = toc();
-    printf("\tFixed-point FFT (N=%u, pow2)  takes %f secs\n", N, ffte_fix_time);
+    printf("\tFFTE(CPP-DynFix) takes %f secs \r\n", ffte_fix_time);
 
     // Convert to double for plots and comparison
     double xr_fix_d[N], xi_fix_d[N];
@@ -86,7 +86,7 @@ static void test_ffte_fix_pow2(unsigned int N)
     tic();
     iffte_pp_fix<double,int32_t>(xr_rec, xi_rec, N, false);
     iffte_fix_time = toc();
-    printf("\tFixed-point IFFT (N=%u, pow2) takes %f secs\n", N, iffte_fix_time);
+    printf("\tIFFTE(CPP-DynFix) takes %f secs \r\n", iffte_fix_time);
 
     double xr_rec_d[N];
     dynfix_to_double(xr_rec, xr_rec_d, N);
@@ -124,7 +124,7 @@ static void test_ffte_fix_nonpow2(unsigned int N)
     tic();
     ffte_pp_fix<double,int32_t>(xr_fix, xi_fix, N, true);
     ffte_fix_time = toc();
-    printf("\tFixed-point FFT (N=%u, non-pow2) takes %f secs\n", N, ffte_fix_time);
+    printf("\tFFTE(CPP-DynFix) NonPow2 takes %f secs \r\n", ffte_fix_time);
 
     double xr_fix_d[N], xi_fix_d[N];
     dynfix_to_double(xr_fix, xr_fix_d, N);
@@ -153,7 +153,7 @@ static void test_ffte_fix_nonpow2(unsigned int N)
     tic();
     iffte_pp_fix<double,int32_t>(xr_rec, xi_rec, N, false);
     iffte_fix_time = toc();
-    printf("\tFixed-point IFFT (N=%u, non-pow2) takes %f secs\n", N, iffte_fix_time);
+    printf("\tIFFTE(CPP-DynFix) NonPow2 takes %f secs \r\n", iffte_fix_time);
 
     double xr_rec_d[N];
     dynfix_to_double(xr_rec, xr_rec_d, N);
@@ -167,11 +167,11 @@ static void test_ffte_fix_nonpow2(unsigned int N)
 }
 
 TEST(ffte_fix_test, pow2_fft_ifft) {
-    printf("Fixed-point FFT test — power-of-2 (N=128, Q(8.16) int32)\n");
+    printf("\n\rFixed-point FFT test — power-of-2 (N=128, Q(8.16) int32)\n");
     test_ffte_fix_pow2(8 * 16);   // N = 128
 }
 
 TEST(ffte_fix_test, nonpow2_fft_ifft) {
-    printf("Fixed-point FFT test — non-power-of-2 (N=120, Q(8.16) int32)\n");
+    printf("\n\rFixed-point FFT test — non-power-of-2 (N=120, Q(8.16) int32)\n");
     test_ffte_fix_nonpow2(8 * 15);  // N = 120
 }

@@ -37,7 +37,7 @@ void test_ffte1d_cpp(unsigned int N)
     tic();
     ffte_pp<double>(x_r,x_i,N,1);
     ffte_time=toc();
-    printf("\tFFTE takes %f secs \r\n", ffte_time);
+    printf("\tFFTE(CPP) takes %f secs \r\n", ffte_time);
 
     plot("../tests/output/cpp/ffte_cpp_Xr.svg", f_axis, x_r , N, "f", "X");
     plot("../tests/output/cpp/ffte_cpp_Xi.svg", f_axis, x_i , N, "f", "X");
@@ -46,13 +46,13 @@ void test_ffte1d_cpp(unsigned int N)
     tic();
     iffte_pp<double>(x_r,x_i,N,0);
     iffte_time=toc();
-    printf("\tIFFTE takes %f secs \r\n", iffte_time);
+    printf("\tIFFTE(CPP) takes %f secs \r\n", iffte_time);
 
     plot("../tests/output/cpp/ffte_cpp_x_ifft.svg", t_axis, x_r , N, "t", "X");
 }
 
 TEST(ffte_test, 1d_cpp) {
-    printf("Power of 2 FFT test\r\n");
+    printf("\n\rPower of 2 FFT test\r\n");
     test_ffte1d_cpp(8*16);
     
     printf("\n\rNon-Power of 2 FFT test\r\n");

@@ -37,7 +37,7 @@ extern "C" {
         tic();
         ffte(x_r,x_i,N,1);
         ffte_time=toc();
-        printf("\tFFTE takes %f secs \r\n", ffte_time);
+        printf("\tFFTE(C) takes %f secs \r\n", ffte_time);
     
         plot("../tests/output/c/ffte_Xr.svg", f_axis, x_r , N, "f", "X");
         plot("../tests/output/c/ffte_Xi.svg", f_axis, x_i , N, "f", "X");
@@ -46,14 +46,14 @@ extern "C" {
         tic();
         iffte(x_r,x_i,N,0);
         iffte_time=toc();
-        printf("\tIFFTE takes %f secs \r\n", iffte_time);
+        printf("\tIFFTE(C) takes %f secs \r\n", iffte_time);
     
         plot("../tests/output/c/ffte_x_ifft.svg", t_axis, x_r , N, "t", "X");
     }
 }
 
 TEST(ffte_test, 1d_c) {
-    printf("Power of 2 FFT test\r\n");
+    printf("\n\rPower of 2 FFT test\r\n");
     test_ffte1d(8*16);
     
     printf("\n\rNon-Power of 2 FFT test\r\n");

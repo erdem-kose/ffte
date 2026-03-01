@@ -2,7 +2,7 @@
 
 #include "tests.hpp"
 #include <cmath>
-#include "../src/cpp/ffte/subfuncs.hpp"
+#include "../src/cpp/ffte_dynfix/subfuncs.hpp"
 
 // ============================================================
 // Construction

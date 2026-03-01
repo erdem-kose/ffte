@@ -3,7 +3,7 @@
 #pragma once
 
 #include <cstdint>
-#include "ffte/subfuncs.hpp"
+#include "ffte_dynfix/subfuncs.hpp"
 
 template <typename Tf, typename Ti>
 void ffte_pp_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
