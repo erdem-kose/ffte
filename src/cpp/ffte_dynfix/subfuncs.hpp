@@ -7,6 +7,12 @@
 // Dynamic fixed-point type: Tf = float reference type, Ti = integer storage type.
 // Format: Q(m.n) where m = integer bits, n = fractional bits.
 // Stored value represents: Q * 2^(-n)
+//
+// The radix point shifts automatically after every arithmetic operation:
+//   - result grew  → n decreases (point moves right, more integer range)
+//   - result shrank → n increases (point moves left, more fractional precision)
+// Each operand may carry a different n; operators align before computing.
+// Constructors and set() always use the caller-specified Q(m.n) format.
 template <typename Tf, typename Ti>
 class DynFix {
     public:
@@ -20,10 +26,10 @@ class DynFix {
         uint8_t getM() const;
         uint8_t getN() const;
 
-        DynFix operator+(const DynFix& r) const;
-        DynFix operator-(const DynFix& r) const;
-        DynFix operator*(const DynFix& r) const;  // rescales via >> n
-        DynFix operator/(const DynFix& r) const;  // prescales via << n
+        DynFix operator+(const DynFix& r) const;  // aligns to max(n, r.n), renormalizes
+        DynFix operator-(const DynFix& r) const;  // aligns to max(n, r.n), renormalizes
+        DynFix operator*(const DynFix& r) const;  // exact product at n+r.n, renormalizes
+        DynFix operator/(const DynFix& r) const;  // max-precision boost, renormalizes
     private:
         Ti      Q;  // raw fixed-point integer
         uint8_t m;  // integer bits (metadata)
