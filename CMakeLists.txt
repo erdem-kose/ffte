@@ -14,7 +14,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
 
 # Plot output format: OFF = SVG (default), ON = PNG
-option(FFTE_PLOT_PNG "Output 1D plots as PNG instead of SVG" OFF)
+option(FFTE_PLOT_PNG "Output 1D plots as PNG instead of SVG" ON)
 
 # Source directories
 file(GLOB_RECURSE SOURCE_C_FILES "src/**/*.c*")
@@ -45,7 +45,7 @@ if(FFTE_PLOT_PNG)
     target_compile_definitions(${PROJECT_NAME} PRIVATE FFTE_PLOT_PNG)
 endif()
 
-target_link_libraries(${PROJECT_NAME} gtest gtest_main gd plplot qsastime png zlibstatic)
+target_link_libraries(${PROJECT_NAME} gtest gtest_main plplot qsastime gd png zlibstatic)
 if(UNIX)
     target_link_libraries(${PROJECT_NAME} m pthread)
 endif()
