@@ -1,6 +1,6 @@
 [
     {
-        "name": "w64devkit-x64-2.0.0",
+        "name": "w64devkit-x64-2.0.0 (Windows)",
         "compilers": {
             "C": "${workspaceFolder}/lib/external/mingw/bin/gcc.exe",
             "CXX": "${workspaceFolder}/lib/external/mingw/bin/g++.exe"
@@ -8,6 +8,15 @@
         "environmentVariables": {
             "PATH": "${workspaceFolder}/lib/external/mingw/bin:${env:PATH}"
         }
+    },
+    {
+        "name": "ARM GNU Toolchain 14.2.rel1 x86-64 (Linux)",
+        "compilers": {
+            "C": "${workspaceFolder}/lib/external/gcc/bin/gcc",
+            "CXX": "${workspaceFolder}/lib/external/gcc/bin/g++"
+        },
+        "environmentVariables": {
+            "PATH": "${workspaceFolder}/lib/external/gcc/bin:${workspaceFolder}/lib/external/cmake/bin:${env:PATH}"
+        }
     }
 ]
-
