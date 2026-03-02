@@ -9,6 +9,13 @@ project(ffte VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Optimization level: no optimization (for timing comparisons and debugging)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
+
+# Plot output format: OFF = SVG (default), ON = PNG
+option(FFTE_PLOT_PNG "Output 1D plots as PNG instead of SVG" OFF)
+
 # Source directories
 file(GLOB_RECURSE SOURCE_C_FILES "src/**/*.c*")
 file(GLOB_RECURSE SOURCE_H_FILES "src/**/*.h*")
@@ -30,11 +37,18 @@ link_directories("${ZLIB_PATH}/lib/"
                  "${PLPLOT_PATH}/lib/qsastime/"
                  "${GOOGLETEST_PATH}/lib/")
 
-add_executable(${PROJECT_NAME} ${SOURCE_C_FILES} 
-                               ${TEST_C_FILES} 
+add_executable(${PROJECT_NAME} ${SOURCE_C_FILES}
+                               ${TEST_C_FILES}
                                ${UTILS_C_FILES})
 
-target_link_libraries(${PROJECT_NAME} gtest gtest_main m pthread zlibstatic png gd plplot qsastime )
+if(FFTE_PLOT_PNG)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE FFTE_PLOT_PNG)
+endif()
+
+target_link_libraries(${PROJECT_NAME} gtest gtest_main gd plplot qsastime png zlibstatic)
+if(UNIX)
+    target_link_libraries(${PROJECT_NAME} m pthread)
+endif()
 target_include_directories(${PROJECT_NAME} PRIVATE "${ZLIB_PATH}/include/"
                                                    "${LIBPNG_PATH}/include/"
                                                    "${LIBGD_PATH}/include/"

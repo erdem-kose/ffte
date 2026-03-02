@@ -9,9 +9,9 @@ set -e
 cwd="$(dirname "$(realpath "$0")")"
 rundir="$(pwd)"
 
-export PATH="$cwd/external/gcc/bin:$cwd/external/cmake/bin:$PATH"
+export PATH="$cwd/../external/gcc/bin:$cwd/../external/cmake/bin:$PATH"
 
-external="$cwd/external"
+external="$cwd/../external"
 zlibDir="$external/zlib"
 pngDir="$external/libpng"
 gdDir="$external/libgd"
@@ -94,6 +94,7 @@ cmake .. -G "Unix Makefiles" \
     -DPLD_wxwidgets=OFF \
     -DENABLE_qt=OFF \
     -DENABLE_qt_gui=OFF \
+    -DENABLE_tcl=OFF \
     -DENABLE_tk=OFF \
     -DENABLE_ntk=OFF \
     -DENABLE_itcl=OFF \
@@ -104,9 +105,13 @@ cmake .. -G "Unix Makefiles" \
     -DENABLE_qsastime=ON \
     -DCMAKE_SKIP_INSTALL_RPATH=ON \
     -DCMAKE_BUILD_RPATH_USE_ORIGIN=ON \
-    -DGD_INCLUDE_DIRS="$gdDir/installfolder/include/" \
-    -DGD_LIBRARIES="$gdDir/installfolder/lib/libgd.a" \
-    -DGD_LIBRARY_DIRS="$gdDir/installfolder/lib/"
+    -DGD_INCLUDE_DIR="$gdDir/installfolder/include" \
+    -DGD_LIBRARY="$gdDir/installfolder/lib/libgd.a" \
+    -DGD_LIBRARIES="$gdDir/installfolder/lib/libgd.a;$pngDir/installfolder/lib/libpng.a;$zlibDir/installfolder/lib/libzlibstatic.a" \
+    -DPNG_PNG_INCLUDE_DIR="$pngDir/installfolder/include" \
+    -DPNG_LIBRARY="$pngDir/installfolder/lib/libpng.a" \
+    -DZLIB_INCLUDE_DIR="$zlibDir/installfolder/include" \
+    -DZLIB_LIBRARY="$zlibDir/installfolder/lib/libzlibstatic.a"
 
 make
 make install

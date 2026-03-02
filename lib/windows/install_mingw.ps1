@@ -10,7 +10,7 @@ $gcc_version = "2.1.0"
 
 $URL = "https://github.com/skeeto/w64devkit/releases/download/v$gcc_version/$gcc_filename-$gcc_version.exe"
 
-$Path = "$cwd/external/"
+$Path = "$cwd/../external/"
 $InstallerPath = "$Path/$gcc_filename-$gcc_version.exe"
 $InstallDir = "$Path/$mingw"
 

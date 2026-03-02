@@ -7,9 +7,9 @@ $cwd=$cwd -replace '\\', '/'
 
 $rundir = Get-Location
 
-$env:Path = "$cwd/external/mingw/bin;$cwd/external/cmake/bin;$env:Path"
+$env:Path = "$cwd/../external/mingw/bin;$cwd/../external/cmake/bin;$env:Path"
 
-$Path = "$cwd/external/googletest"
+$Path = "$cwd/../external/googletest"
 
 git clone --branch v1.17.0 --single-branch https://github.com/google/googletest.git $Path
 

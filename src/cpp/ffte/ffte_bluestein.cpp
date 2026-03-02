@@ -10,7 +10,7 @@
 
 static uint64_t nextpow2(uint64_t v);
 
-template <typename T> void ffte_pp_bluestein(T* x_real, T* x_imag, unsigned int N, bool only_real_input, bool inverse)
+template <typename T> void ffte_cpp_bluestein(T* x_real, T* x_imag, unsigned int N, bool only_real_input, bool inverse)
 {
 	uint64_t M = (2 * N) - 1;
 	uint64_t M_pow2 = nextpow2(M);
@@ -80,8 +80,8 @@ template <typename T> void ffte_pp_bluestein(T* x_real, T* x_imag, unsigned int 
 	}
 
 	// Convolution
-	ffte_pp_cooleytukey(xq_r, xq_i, M_pow2, 0, 0);
-	ffte_pp_cooleytukey(wq_r, wq_i, M_pow2, 0, 0);
+	ffte_cpp_cooleytukey(xq_r, xq_i, M_pow2, 0, 0);
+	ffte_cpp_cooleytukey(wq_r, wq_i, M_pow2, 0, 0);
 
 	for (i = 0; i < M_pow2; ++i)
 	{
@@ -92,7 +92,7 @@ template <typename T> void ffte_pp_bluestein(T* x_real, T* x_imag, unsigned int 
 		xq_i[i]=y.get_imag();
 	}
 
-	ffte_pp_cooleytukey(xq_r, xq_i, M_pow2, 0, 1);
+	ffte_cpp_cooleytukey(xq_r, xq_i, M_pow2, 0, 1);
 
 	// X calculation
 	for (i = 0; i < N; ++i)
@@ -121,5 +121,5 @@ inline uint64_t nextpow2(uint64_t v)
 	return v;
 }
 
-template void ffte_pp_bluestein<double>(double*, double*, unsigned int, bool, bool);
-template void ffte_pp_bluestein<float>(float*, float*, unsigned int, bool, bool);
+template void ffte_cpp_bluestein<double>(double*, double*, unsigned int, bool, bool);
+template void ffte_cpp_bluestein<float>(float*, float*, unsigned int, bool, bool);

@@ -32,7 +32,7 @@ extern "C" {
         double ffte_time, iffte_time;
 
         // Plot data
-        snprintf(path, sizeof(path), "../tests/output/c/%s/ffte_x.svg", postfix);
+        snprintf(path, sizeof(path), "../tests/output/c/%s/ffte_x" PLOT_EXT, postfix);
         plot(path, t_axis, x_r , N, "t", "X");
 
         // Take FFT
@@ -41,9 +41,9 @@ extern "C" {
         ffte_time=toc();
         printf("\tFFTE(C) takes %f secs \r\n", ffte_time);
 
-        snprintf(path, sizeof(path), "../tests/output/c/%s/ffte_Xr.svg", postfix);
+        snprintf(path, sizeof(path), "../tests/output/c/%s/ffte_Xr" PLOT_EXT, postfix);
         plot(path, f_axis, x_r , N, "f", "X");
-        snprintf(path, sizeof(path), "../tests/output/c/%s/ffte_Xi.svg", postfix);
+        snprintf(path, sizeof(path), "../tests/output/c/%s/ffte_Xi" PLOT_EXT, postfix);
         plot(path, f_axis, x_i , N, "f", "X");
 
         // Take IFFT
@@ -52,7 +52,7 @@ extern "C" {
         iffte_time=toc();
         printf("\tIFFTE(C) takes %f secs \r\n", iffte_time);
 
-        snprintf(path, sizeof(path), "../tests/output/c/%s/ffte_x_ifft.svg", postfix);
+        snprintf(path, sizeof(path), "../tests/output/c/%s/ffte_x_ifft" PLOT_EXT, postfix);
         plot(path, t_axis, x_r , N, "t", "X");
 
         // Save execution times

@@ -8,9 +8,9 @@ $cwd = Split-Path -Path $PSCommandPath
 $cwd = $cwd -replace '\\', '/'
 $rundir = Get-Location
 
-$env:Path = "$cwd/external/mingw/bin;$cwd/external/cmake/bin;$env:Path"
+$env:Path = "$cwd/../external/mingw/bin;$cwd/../external/cmake/bin;$env:Path"
 
-$external = "$cwd/external"
+$external = "$cwd/../external"
 $zlibDir = "$external/zlib"
 $pngDir  = "$external/libpng"
 $gdDir  = "$external/libgd"
@@ -72,6 +72,13 @@ cmake .. -G "MinGW Makefiles" `
 make
 make install
 
+### --- 3.5. Patch gd.h to force static declarations (suppress dllimport on Windows) ---
+# libgd 2.3.3 uses BGDWIN32+NONDLL (not BGD_STATIC) to select the static path.
+# Without BGDWIN32 defined, gd.h always falls into the dllimport branch on _WIN32.
+$gdHeader = "$gdDir/installfolder/include/gd.h"
+$content = "#ifndef BGDWIN32`n#define BGDWIN32`n#endif`n#ifndef NONDLL`n#define NONDLL`n#endif`n" + (Get-Content $gdHeader -Raw)
+Set-Content $gdHeader $content -NoNewline
+
 ### --- 4. Clone and build PLplot statically with only the PNG driver ---
 if (Test-Path "$plplotPath") { Remove-Item "$plplotPath" -Recurse -Force }
 git clone --branch plplot-5.15.0 --single-branch https://git.code.sf.net/p/plplot/plplot "$plplotPath"
@@ -83,6 +90,7 @@ Set-Location "$plplotPath/build"
 cmake .. -G "MinGW Makefiles" `
     -DCMAKE_INSTALL_PREFIX="$plplotPath/installfolder/" `
     -DBUILD_SHARED_LIBS=OFF `
+    -DCMAKE_C_FLAGS="-DBGDWIN32 -DNONDLL" `
     -DPLD_png=ON `
     -DPLD_pdf=OFF `
     -DPLD_svg=ON `
@@ -94,6 +102,7 @@ cmake .. -G "MinGW Makefiles" `
     -DPLD_wxwidgets=OFF `
     -DENABLE_qt=OFF `
     -DENABLE_qt_gui=OFF `
+    -DENABLE_tcl=OFF `
     -DENABLE_tk=OFF `
     -DENABLE_ntk=OFF `
     -DENABLE_itcl=OFF `
@@ -104,9 +113,13 @@ cmake .. -G "MinGW Makefiles" `
     -DENABLE_qsastime=ON `
     -DCMAKE_SKIP_INSTALL_RPATH=ON `
     -DCMAKE_BUILD_RPATH_USE_ORIGIN=ON `
-    -DGD_INCLUDE_DIRS="$gdDir/installfolder/include/" `
-    -DGD_LIBRARIES="$gdDir/installfolder/lib/libgd.a" `
-    -DGD_LIBRARY_DIRS="$gdDir/installfolder/lib/"
+    -DGD_INCLUDE_DIR="$gdDir/installfolder/include" `
+    -DGD_LIBRARY="$gdDir/installfolder/lib/libgd.a" `
+    -DGD_LIBRARIES="$gdDir/installfolder/lib/libgd.a;$pngDir/installfolder/lib/libpng.a;$zlibDir/installfolder/lib/libzlibstatic.a" `
+    -DPNG_PNG_INCLUDE_DIR="$pngDir/installfolder/include" `
+    -DPNG_LIBRARY="$pngDir/installfolder/lib/libpng.a" `
+    -DZLIB_INCLUDE_DIR="$zlibDir/installfolder/include" `
+    -DZLIB_LIBRARY="$zlibDir/installfolder/lib/libzlibstatic.a"
 
 make
 make install

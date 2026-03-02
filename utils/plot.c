@@ -22,7 +22,7 @@ void plot(const char* filename, double x[], double y[], int N, const char* x_lbl
             ymin=y[i];
     }
     // Plplot
-    plsetopt("dev","svg");
+    plsetopt("dev", PLOT_DEV);
     plsetopt("o", filename);
     plsetopt("portrait", "0");
     plsetopt("pxwidth", "800");   // width in pixels

@@ -9,9 +9,9 @@ set -e
 cwd="$(dirname "$(realpath "$0")")"
 rundir="$(pwd)"
 
-export PATH="$cwd/external/gcc/bin:$cwd/external/cmake/bin:$PATH"
+export PATH="$cwd/../external/gcc/bin:$cwd/../external/cmake/bin:$PATH"
 
-path="$cwd/external/googletest"
+path="$cwd/../external/googletest"
 
 git clone --branch v1.17.0 --single-branch https://github.com/google/googletest.git "$path"
 

@@ -13,7 +13,7 @@ static void swap_fix(DynFix<Tf,Ti>* X, uint64_t i, uint64_t j) {
 }
 
 template <typename Tf, typename Ti>
-void ffte_pp_cooleytukey_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
+void ffte_cpp_cooleytukey_dynfix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
                               unsigned int N, bool only_real_input, bool inverse)
 {
     const uint8_t sig_m = x_real[0].getM();
@@ -95,7 +95,7 @@ void ffte_pp_cooleytukey_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
     }
 }
 
-template void ffte_pp_cooleytukey_fix<double, int64_t>(DynFix<double,int64_t>*, DynFix<double,int64_t>*, unsigned int, bool, bool);
-template void ffte_pp_cooleytukey_fix<double, int32_t>(DynFix<double,int32_t>*, DynFix<double,int32_t>*, unsigned int, bool, bool);
-template void ffte_pp_cooleytukey_fix<float,  int32_t>(DynFix<float, int32_t>*, DynFix<float, int32_t>*, unsigned int, bool, bool);
-template void ffte_pp_cooleytukey_fix<float,  int16_t>(DynFix<float, int16_t>*, DynFix<float, int16_t>*, unsigned int, bool, bool);
+template void ffte_cpp_cooleytukey_dynfix<double, int64_t>(DynFix<double,int64_t>*, DynFix<double,int64_t>*, unsigned int, bool, bool);
+template void ffte_cpp_cooleytukey_dynfix<double, int32_t>(DynFix<double,int32_t>*, DynFix<double,int32_t>*, unsigned int, bool, bool);
+template void ffte_cpp_cooleytukey_dynfix<float,  int32_t>(DynFix<float, int32_t>*, DynFix<float, int32_t>*, unsigned int, bool, bool);
+template void ffte_cpp_cooleytukey_dynfix<float,  int16_t>(DynFix<float, int16_t>*, DynFix<float, int16_t>*, unsigned int, bool, bool);

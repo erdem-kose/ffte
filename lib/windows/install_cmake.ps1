@@ -9,7 +9,7 @@ $cmake_version = "3.31.5"
 
 $URL = "https://github.com/Kitware/CMake/releases/download/v$cmake_version/cmake-$cmake_version-windows-x86_64.zip"
 
-$Path = "$cwd/external/"
+$Path = "$cwd/../external/"
 $InstallerPath = "$Path/cmake-$cmake_version-windows-x86_64.zip"
 $InstallDir = "$Path/"
 

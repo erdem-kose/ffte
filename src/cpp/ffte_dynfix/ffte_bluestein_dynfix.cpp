@@ -13,7 +13,7 @@ static uint64_t nextpow2_fix(uint64_t v) {
 }
 
 template <typename Tf, typename Ti>
-void ffte_pp_bluestein_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
+void ffte_cpp_bluestein_dynfix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
                             unsigned int N, bool only_real_input, bool inverse)
 {
     const uint8_t sig_m = x_real[0].getM();
@@ -81,8 +81,8 @@ void ffte_pp_bluestein_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
     }
 
     // Convolution
-    ffte_pp_cooleytukey_fix<Tf,Ti>(xq_r, xq_i, (unsigned int)M_pow2, false, false);
-    ffte_pp_cooleytukey_fix<Tf,Ti>(wq_r, wq_i, (unsigned int)M_pow2, false, false);
+    ffte_cpp_cooleytukey_dynfix<Tf,Ti>(xq_r, xq_i, (unsigned int)M_pow2, false, false);
+    ffte_cpp_cooleytukey_dynfix<Tf,Ti>(wq_r, wq_i, (unsigned int)M_pow2, false, false);
 
     for (uint64_t i = 0; i < M_pow2; ++i) {
         x1.set(xq_r[i], xq_i[i]);
@@ -92,7 +92,7 @@ void ffte_pp_bluestein_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
         xq_i[i] = y.get_imag();
     }
 
-    ffte_pp_cooleytukey_fix<Tf,Ti>(xq_r, xq_i, (unsigned int)M_pow2, false, true);
+    ffte_cpp_cooleytukey_dynfix<Tf,Ti>(xq_r, xq_i, (unsigned int)M_pow2, false, true);
 
     // X calculation
     DynFix<Tf,Ti> inv_N((Tf)1.0 / (Tf)N, 1, qn);
@@ -110,7 +110,7 @@ void ffte_pp_bluestein_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
     }
 }
 
-template void ffte_pp_bluestein_fix<double, int64_t>(DynFix<double,int64_t>*, DynFix<double,int64_t>*, unsigned int, bool, bool);
-template void ffte_pp_bluestein_fix<double, int32_t>(DynFix<double,int32_t>*, DynFix<double,int32_t>*, unsigned int, bool, bool);
-template void ffte_pp_bluestein_fix<float,  int32_t>(DynFix<float, int32_t>*, DynFix<float, int32_t>*, unsigned int, bool, bool);
-template void ffte_pp_bluestein_fix<float,  int16_t>(DynFix<float, int16_t>*, DynFix<float, int16_t>*, unsigned int, bool, bool);
+template void ffte_cpp_bluestein_dynfix<double, int64_t>(DynFix<double,int64_t>*, DynFix<double,int64_t>*, unsigned int, bool, bool);
+template void ffte_cpp_bluestein_dynfix<double, int32_t>(DynFix<double,int32_t>*, DynFix<double,int32_t>*, unsigned int, bool, bool);
+template void ffte_cpp_bluestein_dynfix<float,  int32_t>(DynFix<float, int32_t>*, DynFix<float, int32_t>*, unsigned int, bool, bool);
+template void ffte_cpp_bluestein_dynfix<float,  int16_t>(DynFix<float, int16_t>*, DynFix<float, int16_t>*, unsigned int, bool, bool);

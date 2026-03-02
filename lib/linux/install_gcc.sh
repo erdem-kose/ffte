@@ -12,7 +12,7 @@ gcc_filename="arm-gnu-toolchain-${gcc_version}-${gcc_host}-${gcc_target}"
 
 URL="https://developer.arm.com/-/media/Files/downloads/gnu/${gcc_version}/binrel/${gcc_filename}.tar.xz"
 
-path="$cwd/external"
+path="$cwd/../external"
 archive="$path/${gcc_filename}.tar.xz"
 install_dir="$path/gcc"
 

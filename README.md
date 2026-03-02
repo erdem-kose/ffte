@@ -4,6 +4,16 @@ Fast Fourier Transform for Embedded Systems in C and CPP. CPP has also Dynamic F
  * Non-power of 2 FFT's calculated by Bluestein
  * 2D FFT supported
 
+## Usage in Your Project
+The library is standalone — no external dependencies. Just copy the files under `src/` into your project and include the relevant headers:
+ * `src/c/ffte/` — for the C implementation
+ * `src/cpp/ffte/` — for the C++ implementation
+ * `src/cpp/ffte_dynfix/` — for the C++ DynFix implementation
+
+> **Note:** DynFix is a software-only dynamic fixed-point implementation. It is **not** hardware-accelerated and runs slower than the floating-point version. It exists purely as a showcase — to demonstrate how the FFT algorithm behaves with dynamic fixed-point arithmetic. It is not intended for production embedded deployment. To adapt it for real hardware, replace `DynFix<Tf,Ti>` with your platform's native fixed-point type or SIMD intrinsics and map the arithmetic operators accordingly — the algorithm structure remains the same.
+
+The `tests/`, `utils/`, `lib/`, and `matlab/` folders are only needed for development and testing of this repo.
+
 ## Install requirements (Windows)
 **Supported: Windows 10 / Windows 11, x86-64 only**
 (PowerShell 5.1 is required; `Expand-Archive` and modern TLS are not available on Windows 8.1 or earlier.)

@@ -38,12 +38,12 @@ void test_ffte1d_cpp_dynfix(unsigned int N, const char* postfix)
     double ffte_time, iffte_time;
 
     // Plot data
-    snprintf(path, sizeof(path), "../tests/output/cpp_dynfix/%s/ffte_cpp_fix_x.svg", postfix);
+    snprintf(path, sizeof(path), "../tests/output/cpp_dynfix/%s/ffte_cpp_fix_x" PLOT_EXT, postfix);
     plot(path, t_axis, xr_d, N, "t", "X");
 
     // Take FFT
     tic();
-    ffte_pp_fix<double,int32_t>(x_r, x_i, N, true);
+    ffte_cpp_dynfix<double,int32_t>(x_r, x_i, N, true);
     ffte_time = toc();
     printf("\tFFTE(CPP-DynFix) takes %f secs \r\n", ffte_time);
 
@@ -51,20 +51,20 @@ void test_ffte1d_cpp_dynfix(unsigned int N, const char* postfix)
         xr_d[i] = (double)x_r[i].toFloat();
         xi_d[i] = (double)x_i[i].toFloat();
     }
-    snprintf(path, sizeof(path), "../tests/output/cpp_dynfix/%s/ffte_cpp_fix_Xr.svg", postfix);
+    snprintf(path, sizeof(path), "../tests/output/cpp_dynfix/%s/ffte_cpp_fix_Xr" PLOT_EXT, postfix);
     plot(path, f_axis, xr_d, N, "f", "X");
-    snprintf(path, sizeof(path), "../tests/output/cpp_dynfix/%s/ffte_cpp_fix_Xi.svg", postfix);
+    snprintf(path, sizeof(path), "../tests/output/cpp_dynfix/%s/ffte_cpp_fix_Xi" PLOT_EXT, postfix);
     plot(path, f_axis, xi_d, N, "f", "X");
 
     // Take IFFT
     tic();
-    iffte_pp_fix<double,int32_t>(x_r, x_i, N, false);
+    iffte_cpp_dynfix<double,int32_t>(x_r, x_i, N, false);
     iffte_time = toc();
     printf("\tIFFTE(CPP-DynFix) takes %f secs \r\n", iffte_time);
 
     for (unsigned int i = 0; i < N; ++i)
         xr_d[i] = (double)x_r[i].toFloat();
-    snprintf(path, sizeof(path), "../tests/output/cpp_dynfix/%s/ffte_cpp_fix_x_ifft.svg", postfix);
+    snprintf(path, sizeof(path), "../tests/output/cpp_dynfix/%s/ffte_cpp_fix_x_ifft" PLOT_EXT, postfix);
     plot(path, t_axis, xr_d, N, "t", "X");
 
     // Save execution times

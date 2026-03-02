@@ -6,9 +6,17 @@
 #include "ffte_dynfix/subfuncs.hpp"
 
 template <typename Tf, typename Ti>
-void ffte_pp_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
+void ffte_cpp_dynfix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
                  unsigned int N, bool only_real_input);
 
 template <typename Tf, typename Ti>
-void iffte_pp_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
+void iffte_cpp_dynfix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
                   unsigned int N, bool only_real_input);
+
+template <typename Tf, typename Ti>
+void ffte2d_cpp_dynfix(DynFix<Tf,Ti>** x_real, DynFix<Tf,Ti>** x_imag,
+                   unsigned int M, unsigned int N, bool only_real_input);
+
+template <typename Tf, typename Ti>
+void iffte2d_cpp_dynfix(DynFix<Tf,Ti>** x_real, DynFix<Tf,Ti>** x_imag,
+                    unsigned int M, unsigned int N, bool only_real_input);

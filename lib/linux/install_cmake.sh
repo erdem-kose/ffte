@@ -12,7 +12,7 @@ cmake_version="3.31.5"
 
 URL="https://github.com/Kitware/CMake/releases/download/v${cmake_version}/cmake-${cmake_version}-linux-x86_64.tar.gz"
 
-path="$cwd/external"
+path="$cwd/../external"
 archive="$path/cmake-${cmake_version}-linux-x86_64.tar.gz"
 
 mkdir -p "$path"

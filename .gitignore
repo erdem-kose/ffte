@@ -2,3 +2,4 @@ lib/external/
 **/build
 tests/output/**/*.svg
 tests/output/**/*.txt
+tests/output/**/*.png

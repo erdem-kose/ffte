@@ -32,27 +32,27 @@ void test_ffte1d_cpp(unsigned int N, const char* postfix)
     double ffte_time, iffte_time;
 
     // Plot data
-    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_x.svg", postfix);
+    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_x" PLOT_EXT, postfix);
     plot(path, t_axis, x_r , N, "t", "X");
 
     // Take FFT
     tic();
-    ffte_pp<double>(x_r,x_i,N,1);
+    ffte_cpp<double>(x_r,x_i,N,1);
     ffte_time=toc();
     printf("\tFFTE(CPP) takes %f secs \r\n", ffte_time);
 
-    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_Xr.svg", postfix);
+    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_Xr" PLOT_EXT, postfix);
     plot(path, f_axis, x_r , N, "f", "X");
-    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_Xi.svg", postfix);
+    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_Xi" PLOT_EXT, postfix);
     plot(path, f_axis, x_i , N, "f", "X");
 
     // Take IFFT
     tic();
-    iffte_pp<double>(x_r,x_i,N,0);
+    iffte_cpp<double>(x_r,x_i,N,0);
     iffte_time=toc();
     printf("\tIFFTE(CPP) takes %f secs \r\n", iffte_time);
 
-    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_x_ifft.svg", postfix);
+    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_x_ifft" PLOT_EXT, postfix);
     plot(path, t_axis, x_r , N, "t", "X");
 
     // Save execution times

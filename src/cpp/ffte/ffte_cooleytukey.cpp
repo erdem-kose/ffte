@@ -10,7 +10,7 @@
 
 template <typename T> void swap(T *X, uint64_t i, uint64_t j);
 
-template <typename T> void ffte_pp_cooleytukey(T* x_real, T* x_imag, unsigned int N, bool only_real_input, bool inverse)
+template <typename T> void ffte_cpp_cooleytukey(T* x_real, T* x_imag, unsigned int N, bool only_real_input, bool inverse)
 {
 	int64_t M = log((T)N) / log(2.0);
 
@@ -142,5 +142,5 @@ template <typename T> void swap(T *X, uint64_t i, uint64_t j)
 template void swap<double>(double*, uint64_t, uint64_t);
 template void swap<float>(float*, uint64_t, uint64_t);
 
-template void ffte_pp_cooleytukey<double>(double*, double*, unsigned int, bool, bool);
-template void ffte_pp_cooleytukey<float>(float*, float*, unsigned int, bool, bool);
+template void ffte_cpp_cooleytukey<double>(double*, double*, unsigned int, bool, bool);
+template void ffte_cpp_cooleytukey<float>(float*, float*, unsigned int, bool, bool);

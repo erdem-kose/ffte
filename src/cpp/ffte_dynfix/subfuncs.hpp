@@ -58,8 +58,8 @@ class DynFixCmplx {
 
 // Fixed-point FFT kernels (arrays of DynFix; all elements must share the same n)
 template <typename Tf, typename Ti>
-void ffte_pp_cooleytukey_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
+void ffte_cpp_cooleytukey_dynfix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
                               unsigned int N, bool only_real_input, bool inverse);
 template <typename Tf, typename Ti>
-void ffte_pp_bluestein_fix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
+void ffte_cpp_bluestein_dynfix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
                             unsigned int N, bool only_real_input, bool inverse);

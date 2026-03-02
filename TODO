@@ -1,9 +1,5 @@
 Test Linux scripts
 
-add .pdf support, optional
+add .pdf support instead of .svg
 
 Correct comments, add missing comments to source files
-
-add readme.md a section about: this project is standalone if you copy files under src.
-
-add 2D fft functionality with simple images as examples
