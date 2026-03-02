@@ -1,1 +1,9 @@
-make dynfix really dynamic, if output gets bigger, move fix point to right, if gets smaller, mode fix point to left
+Test Linux scripts
+
+add .pdf support, optional
+
+Correct comments, add missing comments to source files
+
+add readme.md a section about: this project is standalone if you copy files under src.
+
+add 2D fft functionality with simple images as examples
