@@ -1,11 +1,1 @@
 make dynfix really dynamic, if output gets bigger, move fix point to right, if gets smaller, mode fix point to left
-
-also make ffte_cpp_dynfix.cpp similar to ffte_cpp.cpp and ffte_c.cpp
-
-add output names postfix to indicate either powerof2 or not for ffte_cpp_dynfix.cpp, ffte_cpp.cpp, ffte_c.cpp
-
-make test output folders for each c, cpp, cppdynfix split for powerof 2 and non power of 2
-
-also save execution times into text files for each individual folders
-
-complete implementation of matlab\lu_factorization

@@ -10,7 +10,7 @@ extern "C" {
 }
 #include "../src/cpp/ffte.hpp"
 
-void test_ffte1d_cpp(unsigned int N)
+void test_ffte1d_cpp(unsigned int N, const char* postfix)
 {
     // Create data
     double x_r[N];
@@ -19,6 +19,7 @@ void test_ffte1d_cpp(unsigned int N)
     double t_axis[N];
     double f=9.375;//10 for N=100 , 9.375 for N=128
     double fs=200;
+    char path[256];
 
     for(int i=0; i< N; ++i)
     {
@@ -31,7 +32,8 @@ void test_ffte1d_cpp(unsigned int N)
     double ffte_time, iffte_time;
 
     // Plot data
-    plot("../tests/output/cpp/ffte_cpp_x.svg", t_axis, x_r , N, "t", "X");
+    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_x.svg", postfix);
+    plot(path, t_axis, x_r , N, "t", "X");
 
     // Take FFT
     tic();
@@ -39,8 +41,10 @@ void test_ffte1d_cpp(unsigned int N)
     ffte_time=toc();
     printf("\tFFTE(CPP) takes %f secs \r\n", ffte_time);
 
-    plot("../tests/output/cpp/ffte_cpp_Xr.svg", f_axis, x_r , N, "f", "X");
-    plot("../tests/output/cpp/ffte_cpp_Xi.svg", f_axis, x_i , N, "f", "X");
+    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_Xr.svg", postfix);
+    plot(path, f_axis, x_r , N, "f", "X");
+    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_Xi.svg", postfix);
+    plot(path, f_axis, x_i , N, "f", "X");
 
     // Take IFFT
     tic();
@@ -48,16 +52,26 @@ void test_ffte1d_cpp(unsigned int N)
     iffte_time=toc();
     printf("\tIFFTE(CPP) takes %f secs \r\n", iffte_time);
 
-    plot("../tests/output/cpp/ffte_cpp_x_ifft.svg", t_axis, x_r , N, "t", "X");
+    snprintf(path, sizeof(path), "../tests/output/cpp/%s/ffte_cpp_x_ifft.svg", postfix);
+    plot(path, t_axis, x_r , N, "t", "X");
+
+    // Save execution times
+    snprintf(path, sizeof(path), "../tests/output/cpp/%s/times.txt", postfix);
+    FILE* f_times = fopen(path, "w");
+    if (f_times) {
+        fprintf(f_times, "ffte_time:  %f secs\n", ffte_time);
+        fprintf(f_times, "iffte_time: %f secs\n", iffte_time);
+        fclose(f_times);
+    }
 }
 
 TEST(ffte_test, 1d_cpp) {
     printf("\n\rPower of 2 FFT test\r\n");
-    test_ffte1d_cpp(8*16);
-    
-    printf("\n\rNon-Power of 2 FFT test\r\n");
-    test_ffte1d_cpp(8*15); // TODO: 1024*63 gives segfault, look at that
+    test_ffte1d_cpp(8*16, "pow2");
 
-    
+    printf("\n\rNon-Power of 2 FFT test\r\n");
+    test_ffte1d_cpp(8*15, "nonpow2"); // TODO: 1024*63 gives segfault, look at that
+
+
     EXPECT_EQ(1, 1);
 }
