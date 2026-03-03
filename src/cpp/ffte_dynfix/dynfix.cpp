@@ -3,16 +3,9 @@
 #include "subfuncs.hpp"
 #include <cstdint>
 
-// ---------------------------------------------------------------------------
-// Internal helpers (file-scope)
-// ---------------------------------------------------------------------------
+// Internal helpers
 
-// Minimum number of signed bits (including the sign bit) needed to represent q
-// in two's complement.  Equivalently: 64 - (leading redundant sign bits).
-//   q =  0 or -1  →  1
-//   q =  1        →  2
-//   q =  127      →  8
-//   q = -128      →  8
+// Minimum signed two's complement bits needed to represent q (including sign bit)
 static int signed_bits_needed(int64_t q) {
     uint64_t u = (q >= 0) ? (uint64_t)q : (uint64_t)(~q);
     int bits = 1;  // sign bit
@@ -20,9 +13,7 @@ static int signed_bits_needed(int64_t q) {
     return bits;
 }
 
-// Align q from n_from fractional bits to n_to fractional bits.
-// Right-shifts are always safe.  Left-shifts are capped so the result stays
-// within int64_t (i.e. does not set bit 63 unexpectedly).
+// Align q from n_from to n_to fractional bits; left-shifts capped to avoid int64_t overflow
 static int64_t align_n(int64_t q, int n_from, int n_to) {
     int shift = n_to - n_from;
     if (shift == 0) return q;
@@ -33,11 +24,8 @@ static int64_t align_n(int64_t q, int n_from, int n_to) {
     return q << (shift < max_shift ? shift : max_shift);
 }
 
-// Pack q64 (currently scaled by 2^n_in) into Ti, choosing n to maximise
-// fractional precision while fitting within the available bit width.
-// This is the core of the "dynamic" behaviour:
-//   - value grew  → radix point moves right  (n decreases)
-//   - value shrank → radix point moves left   (n increases)
+// Renormalize: pack q64 (scaled by 2^n_in) into Ti with maximum fractional precision.
+// If value grew, radix moves right (n decreases); if shrank, radix moves left (n increases).
 template <typename Tf, typename Ti>
 static DynFix<Tf,Ti> renormalize(int64_t q64, int n_in) {
     constexpr int B = (int)(sizeof(Ti) * 8);
@@ -69,27 +57,20 @@ static DynFix<Tf,Ti> renormalize(int64_t q64, int n_in) {
     return DynFix<Tf,Ti>(static_cast<Ti>(new_q), nm, nn);
 }
 
-// ---------------------------------------------------------------------------
 // Constructors
-// ---------------------------------------------------------------------------
-
 template <typename Tf, typename Ti>
 DynFix<Tf,Ti>::DynFix() : Q(0), m(0), n(0) {}
 
-// From raw integer (e.g. already-scaled value from hardware or prior conversion)
+// From raw integer
 template <typename Tf, typename Ti>
 DynFix<Tf,Ti>::DynFix(Ti raw, uint8_t m, uint8_t n) : Q(raw), m(m), n(n) {}
 
-// From float: convert val to Q(m.n) and store in the caller-specified format.
-// The initial format is respected; dynamic adjustment happens only in operators.
+// From float: convert val to Q(m.n) fixed-point; dynamic adjustment happens only in operators
 template <typename Tf, typename Ti>
 DynFix<Tf,Ti>::DynFix(Tf val, uint8_t m, uint8_t n)
     : Q(static_cast<Ti>(val * static_cast<Tf>(int64_t(1) << n))), m(m), n(n) {}
 
-// ---------------------------------------------------------------------------
 // Accessors
-// ---------------------------------------------------------------------------
-
 template <typename Tf, typename Ti>
 void DynFix<Tf,Ti>::set(Tf val) {
     Q = static_cast<Ti>(val * static_cast<Tf>(int64_t(1) << n));
@@ -109,12 +90,9 @@ uint8_t DynFix<Tf,Ti>::getM() const { return m; }
 template <typename Tf, typename Ti>
 uint8_t DynFix<Tf,Ti>::getN() const { return n; }
 
-// ---------------------------------------------------------------------------
-// Arithmetic operators — all auto-renormalize results
-// Operands may have different Q(m.n) formats (different n values after prior ops).
-// ---------------------------------------------------------------------------
+// Arithmetic operators (auto-renormalize; operands may carry different n after prior ops)
 
-// Addition: align both operands to the higher-precision format, then renormalize.
+// Addition: align both to higher-precision format, then renormalize
 template <typename Tf, typename Ti>
 DynFix<Tf,Ti> DynFix<Tf,Ti>::operator+(const DynFix<Tf,Ti>& r) const {
     int n_out = ((int)n > (int)r.n) ? (int)n : (int)r.n;
@@ -123,7 +101,7 @@ DynFix<Tf,Ti> DynFix<Tf,Ti>::operator+(const DynFix<Tf,Ti>& r) const {
     return renormalize<Tf,Ti>(q1 + q2, n_out);
 }
 
-// Subtraction: same alignment strategy as addition.
+// Subtraction: same alignment strategy as addition
 template <typename Tf, typename Ti>
 DynFix<Tf,Ti> DynFix<Tf,Ti>::operator-(const DynFix<Tf,Ti>& r) const {
     int n_out = ((int)n > (int)r.n) ? (int)n : (int)r.n;
@@ -132,16 +110,14 @@ DynFix<Tf,Ti> DynFix<Tf,Ti>::operator-(const DynFix<Tf,Ti>& r) const {
     return renormalize<Tf,Ti>(q1 - q2, n_out);
 }
 
-// Multiplication: full integer product is scaled by 2^(n+r.n); renormalize
-// from that combined scale.  No manual >> n needed — renormalize handles it.
+// Multiplication: product scaled by 2^(n+r.n), renormalize from combined scale
 template <typename Tf, typename Ti>
 DynFix<Tf,Ti> DynFix<Tf,Ti>::operator*(const DynFix<Tf,Ti>& r) const {
     int64_t product = (int64_t)Q * (int64_t)r.Q;
     return renormalize<Tf,Ti>(product, (int)n + (int)r.n);
 }
 
-// Division: left-shift numerator by as many bits as int64_t safely allows to
-// maximise quotient precision, then renormalize from the resulting scale.
+// Division: shift numerator left to maximize precision, then renormalize
 template <typename Tf, typename Ti>
 DynFix<Tf,Ti> DynFix<Tf,Ti>::operator/(const DynFix<Tf,Ti>& r) const {
     if (r.Q == 0)
@@ -154,9 +130,7 @@ DynFix<Tf,Ti> DynFix<Tf,Ti>::operator/(const DynFix<Tf,Ti>& r) const {
     return renormalize<Tf,Ti>(result, (int)n + n_boost - (int)r.n);
 }
 
-// ---------------------------------------------------------------------------
 // Explicit instantiations
-// ---------------------------------------------------------------------------
 template class DynFix<double, int64_t>;
 template class DynFix<double, int32_t>;
 template class DynFix<float,  int32_t>;

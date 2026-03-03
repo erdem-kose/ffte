@@ -26,7 +26,7 @@ inline void ffte2d_base(double** x_real, double** x_imag, unsigned int M, unsign
 {
 	unsigned int i, j;
 
-	//Process first index
+	// FFT along rows (N)
 	if(N<2)
 	{}
 	else if((N & (N - 1)) == 0)
@@ -40,7 +40,7 @@ inline void ffte2d_base(double** x_real, double** x_imag, unsigned int M, unsign
 			ffte_bluestein(x_real[i], x_imag[i], N, only_real_input, isinverse);
 	}
 
-	//Process second index
+	// FFT along columns (M)
 	double x_real_tmp[M];
 	double x_imag_tmp[M];
 

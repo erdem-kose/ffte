@@ -3,6 +3,7 @@
 #include "ffte_dynfix.hpp"
 #include "ffte/subfuncs.hpp"
 
+// FFT
 template <typename Tf, typename Ti>
 void ffte_cpp_dynfix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
                  unsigned int N, bool only_real_input)
@@ -19,6 +20,7 @@ template void ffte_cpp_dynfix<double, int32_t>(DynFix<double,int32_t>*, DynFix<d
 template void ffte_cpp_dynfix<float,  int32_t>(DynFix<float, int32_t>*, DynFix<float, int32_t>*, unsigned int, bool);
 template void ffte_cpp_dynfix<float,  int16_t>(DynFix<float, int16_t>*, DynFix<float, int16_t>*, unsigned int, bool);
 
+// IFFT
 template <typename Tf, typename Ti>
 void iffte_cpp_dynfix(DynFix<Tf,Ti>* x_real, DynFix<Tf,Ti>* x_imag,
                   unsigned int N, bool only_real_input)

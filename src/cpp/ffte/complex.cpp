@@ -2,12 +2,14 @@
 
 #include "subfuncs.hpp"
 
+// Constructors
 template <typename T>
 Cmplx<T>::Cmplx() : real(0), imag(0) {}
 
 template <typename T>
 Cmplx<T>::Cmplx(T real, T imag) : real(real), imag(imag) {}
 
+// Accessors
 template <typename T>
 void Cmplx<T>::set(T real, T imag) {
     this->real = real;
@@ -24,6 +26,7 @@ T Cmplx<T>::get_imag() {
     return imag;
 }
 
+// Operators
 template <typename T>
 Cmplx<T> Cmplx<T>::operator+(const Cmplx<T>& r) const {
     return Cmplx<T>(real + r.real, imag + r.imag);

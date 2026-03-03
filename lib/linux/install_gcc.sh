@@ -5,15 +5,14 @@ set -e
 
 cwd="$(dirname "$(realpath "$0")")"
 
-gcc_version="14.2.rel1"
-gcc_host="x86_64"
-gcc_target="x86_64-none-linux-gnu"
-gcc_filename="arm-gnu-toolchain-${gcc_version}-${gcc_host}-${gcc_target}"
+gcc_version="2024.05-1"
+gcc_target="x86_64-buildroot-linux-gnu"
+gcc_filename="x86-64--glibc--stable-${gcc_version}"
 
-URL="https://developer.arm.com/-/media/Files/downloads/gnu/${gcc_version}/binrel/${gcc_filename}.tar.xz"
+URL="https://toolchains.bootlin.com/downloads/releases/toolchains/x86-64/tarballs/${gcc_filename}.tar.bz2"
 
 path="$cwd/../external"
-archive="$path/${gcc_filename}.tar.xz"
+archive="$path/${gcc_filename}.tar.bz2"
 install_dir="$path/gcc"
 
 # Create the directory if it doesn't exist
@@ -23,7 +22,7 @@ mkdir -p "$path"
 curl -L -o "$archive" "$URL"
 
 # Extract the archive
-tar -xJf "$archive" -C "$path"
+tar -xjf "$archive" -C "$path"
 
 mv "$path/${gcc_filename}" "$install_dir"
 
