@@ -13,6 +13,7 @@ export PATH="$cwd/../external/gcc/bin:$cwd/../external/cmake/bin:$PATH"
 
 path="$cwd/../external/googletest"
 
+rm -rf "$path"
 git clone --branch v1.17.0 --single-branch https://github.com/google/googletest.git "$path"
 
 rm -rf "$path/build"
@@ -21,12 +22,15 @@ mkdir -p "$path/build"
 cd "$path/build"
 
 cmake .. -DBUILD_GMOCK=OFF \
-         -G "Unix Makefiles" \
+         -G "Ninja" \
+         -DCMAKE_MAKE_PROGRAM="$cwd/../external/gcc/bin/ninja" \
+         -DCMAKE_C_COMPILER="$cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-gcc" \
+         -DCMAKE_CXX_COMPILER="$cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-g++" \
          -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
          -DCMAKE_INSTALL_PREFIX="$path/install"
 
-make
-make install
+cmake --build .
+cmake --install .
 
 cd "$rundir"
 

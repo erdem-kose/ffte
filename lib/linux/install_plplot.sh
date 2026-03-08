@@ -25,12 +25,16 @@ rm -rf "$zlibDir/build"
 mkdir -p "$zlibDir/build"
 cd "$zlibDir/build"
 
-cmake .. -G "Unix Makefiles" \
+cmake .. -G "Ninja" \
+    -DCMAKE_MAKE_PROGRAM="$cwd/../external/gcc/bin/ninja" \
+    -DCMAKE_C_COMPILER="$cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-gcc" \
+    -DCMAKE_CXX_COMPILER="$cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-g++" \
     -DCMAKE_INSTALL_PREFIX="$zlibDir/installfolder" \
     -DBUILD_SHARED_LIBS=OFF
 
-make
-make install
+cmake --build .
+cmake --install .
+ln -s "$zlibDir/installfolder/lib/libz.a" "$zlibDir/installfolder/lib/libzlibstatic.a"
 
 ### --- 2. Clone and build static libpng ---
 rm -rf "$pngDir"
@@ -40,7 +44,10 @@ rm -rf "$pngDir/build"
 mkdir -p "$pngDir/build"
 cd "$pngDir/build"
 
-cmake .. -G "Unix Makefiles" \
+cmake .. -G "Ninja" \
+    -DCMAKE_MAKE_PROGRAM="$cwd/../external/gcc/bin/ninja" \
+    -DCMAKE_C_COMPILER="$cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-gcc" \
+    -DCMAKE_CXX_COMPILER="$cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-g++" \
     -DCMAKE_INSTALL_PREFIX="$pngDir/installfolder" \
     -DPNG_SHARED=OFF \
     -DPNG_STATIC=ON \
@@ -48,8 +55,8 @@ cmake .. -G "Unix Makefiles" \
     -DZLIB_INCLUDE_DIR="$zlibDir/installfolder/include" \
     -DBUILD_SHARED_LIBS=OFF
 
-make
-make install
+cmake --build .
+cmake --install .
 
 ### --- 3. Clone and build static libgd ---
 rm -rf "$gdDir"
@@ -59,7 +66,10 @@ rm -rf "$gdDir/build"
 mkdir -p "$gdDir/build"
 cd "$gdDir/build"
 
-cmake .. -G "Unix Makefiles" \
+cmake .. -G "Ninja" \
+    -DCMAKE_MAKE_PROGRAM="$cwd/../external/gcc/bin/ninja" \
+    -DCMAKE_C_COMPILER="$cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-gcc" \
+    -DCMAKE_CXX_COMPILER="$cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-g++" \
     -DCMAKE_INSTALL_PREFIX="$gdDir/installfolder" \
     -DBUILD_SHARED_LIBS=OFF \
     -DBUILD_STATIC_LIBS=ON \
@@ -69,8 +79,8 @@ cmake .. -G "Unix Makefiles" \
     -DPNG_PNG_INCLUDE_DIR="$pngDir/installfolder/include" \
     -DPNG_LIBRARY="$pngDir/installfolder/lib/libpng.a"
 
-make
-make install
+cmake --build .
+cmake --install .
 
 ### --- 4. Clone and build PLplot statically with only the PNG/SVG driver ---
 rm -rf "$plplotPath"
@@ -80,7 +90,14 @@ rm -rf "$plplotPath/build"
 mkdir -p "$plplotPath/build"
 cd "$plplotPath/build"
 
-cmake .. -G "Unix Makefiles" \
+gcc_sysroot="$($cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-gcc --print-sysroot)"
+
+cmake .. -G "Ninja" \
+    -DCMAKE_MAKE_PROGRAM="$cwd/../external/gcc/bin/ninja" \
+    -DCMAKE_C_COMPILER="$cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-gcc" \
+    -DCMAKE_CXX_COMPILER="$cwd/../external/gcc/bin/x86_64-buildroot-linux-gnu-g++" \
+    -DCMAKE_SYSROOT="$gcc_sysroot" \
+    -DCMAKE_REQUIRED_LIBRARIES="$pngDir/installfolder/lib/libpng.a;$zlibDir/installfolder/lib/libzlibstatic.a;m" \
     -DCMAKE_INSTALL_PREFIX="$plplotPath/installfolder/" \
     -DBUILD_SHARED_LIBS=OFF \
     -DPLD_png=ON \
@@ -113,8 +130,8 @@ cmake .. -G "Unix Makefiles" \
     -DZLIB_INCLUDE_DIR="$zlibDir/installfolder/include" \
     -DZLIB_LIBRARY="$zlibDir/installfolder/lib/libzlibstatic.a"
 
-make
-make install
+cmake --build .
+cmake --install .
 
 ### --- 5. Final cleanup ---
 cd "$rundir"

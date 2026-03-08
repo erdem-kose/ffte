@@ -1,6 +1,9 @@
 [
     {
-        "name": "w64devkit-x64-2.0.0 (Windows)",
+        "name": "w64devkit-x64-2.1.0 (Windows)",
+        "preferredGenerator": {
+            "name": "MinGW Makefiles"
+        },
         "compilers": {
             "C": "${workspaceFolder}/lib/external/mingw/bin/gcc.exe",
             "CXX": "${workspaceFolder}/lib/external/mingw/bin/g++.exe"
@@ -10,10 +13,13 @@
         }
     },
     {
-        "name": "ARM GNU Toolchain 14.2.rel1 x86-64 (Linux)",
+        "name": "Bootlin GCC 2024.05-1 x86-64 (Linux)",
+        "preferredGenerator": {
+            "name": "Ninja"
+        },
         "compilers": {
-            "C": "${workspaceFolder}/lib/external/gcc/bin/gcc",
-            "CXX": "${workspaceFolder}/lib/external/gcc/bin/g++"
+            "C": "${workspaceFolder}/lib/external/gcc/bin/x86_64-buildroot-linux-gnu-gcc",
+            "CXX": "${workspaceFolder}/lib/external/gcc/bin/x86_64-buildroot-linux-gnu-g++"
         },
         "environmentVariables": {
             "PATH": "${workspaceFolder}/lib/external/gcc/bin:${workspaceFolder}/lib/external/cmake/bin:${env:PATH}"

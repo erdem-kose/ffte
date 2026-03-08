@@ -15,6 +15,7 @@ URL="https://github.com/Kitware/CMake/releases/download/v${cmake_version}/cmake-
 path="$cwd/../external"
 archive="$path/cmake-${cmake_version}-linux-x86_64.tar.gz"
 
+rm -rf "$path/cmake"
 mkdir -p "$path"
 
 # Download the archive
