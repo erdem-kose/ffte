@@ -1,23 +1,29 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
+// Copyright (c) [2022-2026] Erdem Kose
 
-#include "subfuncs.h"
-#include "../ffte.h"
+#include <cmath>
+#include <cstdio>
+#include <cstdint>
+#include <cstdlib>
 
-void swap(double *X, uint64_t i, uint64_t j);
+#include "subfuncs.hpp"
+#include "../ffte.hpp"
 
-void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned char only_real_input, unsigned char inverse)
+template <typename T> void swap(T *X, uint64_t i, uint64_t j);
+
+template <typename T> void ffte_cpp_cooleytukey(T* x_real, T* x_imag, unsigned int N, bool only_real_input, bool inverse)
 {
-	int64_t M = log((double)N) / log(2.0);
+	int64_t M = log((T)N) / log(2.0);
+
+	Cmplx<T> y;
+	Cmplx<T> x1;
+	Cmplx<T> x2;
 
 	// wq calculation
-	double PI_N = (inverse != 0) ? (-M_PI / (double)N) : (M_PI / (double)N);
+	T PI_N = (inverse != 0) ? (-M_PI / (T)N) : (M_PI / (T)N);
 
-	double trig_param;
+	T trig_param;
 
-	double wq_r[N], wq_i[N];
+	T wq_r[N], wq_i[N];
 
 	int64_t i;
 	for (i = 0; i < N; ++i)
@@ -52,8 +58,8 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 
 			if (i_new < i)
 			{
-				swap(x_real, i, i_new);
-				swap(x_imag, i, i_new);
+				swap<T>(x_real, i, i_new);
+				swap<T>(x_imag, i, i_new);
 			}
 		}
 	}
@@ -70,7 +76,7 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 
 			if (i_new < i)
 			{
-				swap(x_real, i, i_new);
+				swap<T>(x_real, i, i_new);
 			}
 		}
 	}
@@ -78,7 +84,7 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 	// log(N) stages
 	int64_t k, j, j1, j2, j3, j3_fact;
 
-	double r_tmp, i_tmp;
+	T r_tmp, i_tmp;
 	
 	int64_t n1 = 1;
 	int64_t n2 = n1 << 1;
@@ -98,7 +104,11 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 				j2 = j1 + n1;
 				j3 = j*j3_fact;
 
-				cmplx_mul(&r_tmp, &i_tmp, x_real[j2], x_imag[j2], wq_r[j3], wq_i[j3]);
+				x1.set(x_real[j2], x_imag[j2]);
+				x2.set(wq_r[j3], wq_i[j3]);
+				y=x1*x2;
+				r_tmp=y.get_real();
+				i_tmp=y.get_imag();
 
 				x_real[j2] = x_real[j1] - r_tmp;
 				x_imag[j2] = x_imag[j1] - i_tmp;
@@ -122,9 +132,15 @@ void ffte_cooleytukey(double* x_real, double* x_imag, unsigned int N, unsigned c
 	}
 }
 
-inline void swap(double *X, uint64_t i, uint64_t j)
+template <typename T> void swap(T *X, uint64_t i, uint64_t j)
 {
-	double temp = X[i];
+	T temp = X[i];
 	X[i] = X[j];
 	X[j] = temp;
 }
+
+template void swap<double>(double*, uint64_t, uint64_t);
+template void swap<float>(float*, uint64_t, uint64_t);
+
+template void ffte_cpp_cooleytukey<double>(double*, double*, unsigned int, bool, bool);
+template void ffte_cpp_cooleytukey<float>(float*, float*, unsigned int, bool, bool);

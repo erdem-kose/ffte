@@ -1,5 +1,7 @@
+// Copyright (c) [2022-2026] Erdem Kose
+
 #include <math.h>
-#include <plplot/plplot.h>
+#include "plplot/plplot.h"
 #include "plot.h"
 
 void plot(const char* filename, double x[], double y[], int N, const char* x_lbl, const char* y_lbl)
@@ -20,8 +22,11 @@ void plot(const char* filename, double x[], double y[], int N, const char* x_lbl
             ymin=y[i];
     }
     // Plplot
-    plsetopt("dev","pdf");
+    plsetopt("dev", PLOT_DEV);
     plsetopt("o", filename);
+    plsetopt("portrait", "0");
+    plsetopt("pxwidth", "800");   // width in pixels
+    plsetopt("pxheight", "600"); 
     
     plinit();
     

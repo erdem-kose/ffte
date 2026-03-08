@@ -1,22 +1,60 @@
-cmake_minimum_required(VERSION 3.0.0)
+# Copyright (c) [2022-2026] Erdem Kose
+
+cmake_minimum_required(VERSION 3.31)
+
+# Project name
 project(ffte VERSION 0.1.0)
 
-include(CTest)
+# Specify the version of the C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# Optimization level: no optimization (for timing comparisons and debugging)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
+
+# Plot output format: OFF = SVG (default), ON = PNG
+option(FFTE_PLOT_PNG "Output 1D plots as PNG instead of SVG" ON)
+
+# Source directories
+file(GLOB_RECURSE SOURCE_C_FILES "src/**/*.c*")
+file(GLOB_RECURSE SOURCE_H_FILES "src/**/*.h*")
+file(GLOB_RECURSE UTILS_C_FILES "utils/*.c*")
+file(GLOB_RECURSE UTILS_H_FILES "utils/*.h*")
+file(GLOB_RECURSE TEST_C_FILES "tests/*.c*")
+file(GLOB_RECURSE TEST_H_FILES "tests/*.h*")
+set(ZLIB_PATH "lib/external/zlib/installfolder/")
+set(LIBPNG_PATH "lib/external/libpng/installfolder/")
+set(LIBGD_PATH "lib/external/libgd/installfolder/")
+set(PLPLOT_PATH "lib/external/plplot/installfolder/")
+set(GOOGLETEST_PATH "lib/external/googletest/")
+
+# Add the executable
+link_directories("${ZLIB_PATH}/lib/"
+                 "${LIBPNG_PATH}/lib/"
+                 "${LIBGD_PATH}/lib/"
+                 "${PLPLOT_PATH}/lib/"
+                 "${PLPLOT_PATH}/lib/qsastime/"
+                 "${GOOGLETEST_PATH}/lib/")
+
+add_executable(${PROJECT_NAME} ${SOURCE_C_FILES}
+                               ${TEST_C_FILES}
+                               ${UTILS_C_FILES})
+
+if(FFTE_PLOT_PNG)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE FFTE_PLOT_PNG)
+endif()
+
+target_link_libraries(${PROJECT_NAME} gtest gtest_main plplot qsastime gd png zlibstatic)
+if(UNIX)
+    target_link_libraries(${PROJECT_NAME} m pthread)
+endif()
+target_include_directories(${PROJECT_NAME} PRIVATE "${ZLIB_PATH}/include/"
+                                                   "${LIBPNG_PATH}/include/"
+                                                   "${LIBGD_PATH}/include/"
+                                                   "${PLPLOT_PATH}/include/"
+                                                   "${GOOGLETEST_PATH}/include/")
+
+# Testing
 enable_testing()
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu99 -Ofast")
-
-file(GLOB_RECURSE SRC src/*.c)
-file(GLOB_RECURSE UTILS utils/*.c)
-
-add_executable(ffte main.c ${SRC} ${UTILS})
-
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/ffte ${PROJECT_SOURCE_DIR}/main
-)
-
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-
-target_link_libraries(${PROJECT_NAME} m plplot)
-include(CPack)
+add_test(NAME example_test COMMAND ${PROJECT_NAME})

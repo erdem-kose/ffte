@@ -1,3 +1,5 @@
+// Copyright (c) [2022-2026] Erdem Kose
+
 #include <math.h>
 #include <stdio.h>
 #include <stdint.h>

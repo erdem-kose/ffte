@@ -1,3 +1,5 @@
+// Copyright (c) [2022-2026] Erdem Kose
+
 #include <stdio.h>
 #include <time.h>
 #include "exectime.h"
